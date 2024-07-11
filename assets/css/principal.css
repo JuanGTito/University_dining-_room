@@ -4,7 +4,7 @@ body{
     padding: 0;
 }
 .cabecera {
-    background-color: #4c6faf;
+    background-color: #2d4268;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -36,20 +36,39 @@ body{
     justify-content: center;
     padding: 30px;
 }
+.limite-capacidad div{
+    background-color: rgb(193, 198, 202, 0.6);
+    padding: 10px;
+    border-radius: 15px;
+}
+.limite-capacidad div p{
+    text-align: center;
+    font-weight: 700;
+}
+main{
+    margin: 250;
+}
 .menu{
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: antiquewhite;
-    margin: 0px 250px;
-    padding: 2rem;
+    background-color: rgb(193, 198, 202);
+    margin: 0 250px;
+    padding: 1rem 2rem;
 }
+hr {
+    height: 2px;
+    width: 100%;
+    background-color: rgb(42, 61, 165);
+    border-color: rgb(61, 42, 165);
+  }
 .menu-diario{
-    padding: 2rem 0;
+    padding: 1rem 0;
 }
 .dia-semanal{
     padding: 12px 20px;
 }
 .comida-diaria{
     padding: 0 20px;
+    text-align: center;
 }

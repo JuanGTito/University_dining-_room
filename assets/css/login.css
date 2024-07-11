@@ -1,21 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Outfit:wght@100..900&display=swap');
+
 body{
-    background-color: rgba(55, 67, 224, 0.658);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/img/background/img-2.jpg");
+    margin: 0;
+    padding: 0;
 }
+
 main{
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 15% 25%;
+    margin: 15% 35%;
     padding: 20px;
+    height: 20vh;
 }
-.img-login img{
-    width: 319px;
-    height: 355px;
-}
+
 .login{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background: rgb(105, 104, 104);
-    padding: 70px;
+    background: rgba(12, 13, 70, 0.2);
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.iniciar-sesion{
+    text-align: center;
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+}
+.login p{
+    font-family: "Outfit", sans-serif;
+}
+.login input{
+    border: 2px solid rgba(12, 13, 70, 0.2);
+    border-radius: 10px;
+    padding: 6px;
+    margin-bottom: 1rem;
+}
+.login span{
+    font-family: "Outfit", sans-serif;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+button{
+    margin: 0 5rem;
+    font-family: "Outfit", sans-serif;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 2px solid rgba(12, 13, 70, 0.2);;
 }
