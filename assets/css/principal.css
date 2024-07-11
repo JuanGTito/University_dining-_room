@@ -41,10 +41,11 @@ body{
     flex-direction: column;
     align-items: center;
     background-color: antiquewhite;
-    MARGIN
+    margin: 0px 250px;
+    padding: 2rem;
 }
 .menu-diario{
-    padding: 1rem 0;
+    padding: 2rem 0;
 }
 .dia-semanal{
     padding: 12px 20px;

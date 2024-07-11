@@ -1,8 +1,8 @@
-var Connection = require('mysql');  
-var config = mysql.createConnection({
+const Connection = require('mysql');  
+var config = Connection.createConnection({
     host: "localhost",
     database: "comedor_universitario",
-    user: "root",
+    user: "admin",
     password: "admin"
 });
 
