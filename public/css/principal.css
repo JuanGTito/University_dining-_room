@@ -4,6 +4,7 @@ body{
     background-color: white;
     margin: 0;
     padding: 0;
+    font-family: "Outfit", sans-serif;
 }
 .cabecera {
     background-color: #2d4268;
@@ -38,27 +39,15 @@ body{
     color: white;
     text-decoration: none;
 }
-main{
-    display: flex;
-    align-items: center
-}
-.img-1{
-    display: flex;
-    
-}
-.img-1 img{
-    margin: 15px;
-    width: 50px;
-}
 .img-2{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 .img-2 .portada{
-  width: 50%;
+  width: 150vh;
 }
 .img-log img {
     margin: 10px;
-    width: 50px;
+    width: 15vh;
 }

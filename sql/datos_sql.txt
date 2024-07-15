@@ -1,0 +1,99 @@
+-- Insertar datos en la tabla users
+INSERT INTO `users` (`idusers`, `usuario`, `contrasenia`) VALUES
+(1, 'usuario1', 'contrasenia1'),
+(2, 'usuario2', 'contrasenia2'),
+(3, 'usuario3', 'contrasenia3'),
+(4, 'usuario4', 'contrasenia4'),
+(5, 'usuario5', 'contrasenia5');
+
+-- Insertar datos en la tabla Administracion
+INSERT INTO `Administracion` (`idAdministracion`, `dep_responsable`, `cargo_dep`, `nombre`, `ape_paterno`, `ape_materno`, `telefono`, `correo`, `idusers`) VALUES
+(1, 'Departamento 1', 'Cargo 1', 'Nombre1', 'Apellido1', 'Apellido2', '123456789012', 'correo1@example.com', 1),
+(2, 'Departamento 2', 'Cargo 2', 'Nombre2', 'Apellido1', 'Apellido2', '123456789012', 'correo2@example.com', 2),
+(3, 'Departamento 3', 'Cargo 3', 'Nombre3', 'Apellido1', 'Apellido2', '123456789012', 'correo3@example.com', 3),
+(4, 'Departamento 4', 'Cargo 4', 'Nombre4', 'Apellido1', 'Apellido2', '123456789012', 'correo4@example.com', 4),
+(5, 'Departamento 5', 'Cargo 5', 'Nombre5', 'Apellido1', 'Apellido2', '123456789012', 'correo5@example.com', 5);
+
+-- Insertar datos en la tabla Carrera
+INSERT INTO `Carrera` (`idCarrera`, `nombre`) VALUES
+(1, 'Carrera 1'),
+(2, 'Carrera 2'),
+(3, 'Carrera 3'),
+(4, 'Carrera 4'),
+(5, 'Carrera 5');
+
+-- Insertar datos en la tabla Estudiante
+INSERT INTO `Estudiante` (`codigoestudiante`, `dni`, `nombre`, `ape_paterno`, `ape_materno`, `est_beca`, `tip_beca`, `idAdministracion`, `idCarrera`, `idusers`) VALUES
+(1, 12345678, 'Estudiante1', 'Apellido1', 'Apellido2', 'Activo', 'Becado', 1, 1, 1),
+(2, 23456789, 'Estudiante2', 'Apellido1', 'Apellido2', 'Activo', 'Accesitario', 2, 2, 2),
+(3, 34567890, 'Estudiante3', 'Apellido1', 'Apellido2', 'Inactivo', 'Becado', 3, 3, 3),
+(4, 45678901, 'Estudiante4', 'Apellido1', 'Apellido2', 'Activo', 'Becado', 4, 4, 4),
+(5, 56789012, 'Estudiante5', 'Apellido1', 'Apellido2', 'Inactivo', 'Accesitario', 5, 5, 5);
+
+-- Insertar datos en la tabla Encuesta
+INSERT INTO `Encuesta` (`idEncuesta`, `fecha`, `Comentario`, `Puntuacion`, `codigoestudiante2`) VALUES
+(1, '2024-01-01', 'Comentario 1', 5, 1),
+(2, '2024-02-01', 'Comentario 2', 4, 2),
+(3, '2024-03-01', 'Comentario 3', 3, 3),
+(4, '2024-04-01', 'Comentario 4', 2, 4),
+(5, '2024-05-01', 'Comentario 5', 1, 5);
+
+-- Insertar datos en la tabla Asistencia
+INSERT INTO `Asistencia` (`idAsistencia`, `fecha_hora`, `codigoestudiante1`) VALUES
+(1, '2024-01-01 08:00:00', 1),
+(2, '2024-02-01 08:00:00', 2),
+(3, '2024-03-01 08:00:00', 3),
+(4, '2024-04-01 08:00:00', 4),
+(5, '2024-05-01 08:00:00', 5);
+
+-- Insertar datos en la tabla Concesionaria
+INSERT INTO `Concesionaria` (`idConcecionaria`, `nombre`, `correo`, `num_telefono`, `nro`, `calle`, `ciudad`, `idusers`) VALUES
+(1, 'Concesionaria 1', 'concesionaria1@example.com', '123456789012', 1, 'Calle 1', 'Ciudad 1', 1),
+(2, 'Concesionaria 2', 'concesionaria2@example.com', '123456789012', 2, 'Calle 2', 'Ciudad 2', 2),
+(3, 'Concesionaria 3', 'concesionaria3@example.com', '123456789012', 3, 'Calle 3', 'Ciudad 3', 3),
+(4, 'Concesionaria 4', 'concesionaria4@example.com', '123456789012', 4, 'Calle 4', 'Ciudad 4', 4),
+(5, 'Concesionaria 5', 'concesionaria5@example.com', '123456789012', 5, 'Calle 5', 'Ciudad 5', 5);
+
+-- Insertar datos en la tabla Menu
+INSERT INTO `Menu` (`idMenu`, `fecha`, `tip_menu`, `idConcecionaria`) VALUES
+(1, '2024-01-01', 'Desayuno', 1),
+(2, '2024-02-01', 'Almuerzo', 2),
+(3, '2024-03-01', 'Desayuno', 3),
+(4, '2024-04-01', 'Almuerzo', 4),
+(5, '2024-05-01', 'Desayuno', 5);
+
+-- Insertar datos en la tabla Comida
+INSERT INTO `Comida` (`idComida`, `nombre`, `info_nutricional`, `ingredientes`, `descripcion`, `idMenu`) VALUES
+(1, 'Comida 1', 'Info 1', 'Ingrediente 1', 'Descripcion 1', 1),
+(2, 'Comida 2', 'Info 2', 'Ingrediente 2', 'Descripcion 2', 2),
+(3, 'Comida 3', 'Info 3', 'Ingrediente 3', 'Descripcion 3', 3),
+(4, 'Comida 4', 'Info 4', 'Ingrediente 4', 'Descripcion 4', 4),
+(5, 'Comida 5', 'Info 5', 'Ingrediente 5', 'Descripcion 5', 5);
+
+-- Insertar datos en la tabla Personal
+INSERT INTO `Personal` (`dni`, `nombre`, `ape_paterno`, `ape_materno`, `cargo`, `idConcesionaria2`) VALUES
+(12345678, 'Personal1', 'Apellido1', 'Apellido2', 'Cargo 1', 1),
+(23456789, 'Personal2', 'Apellido1', 'Apellido2', 'Cargo 2', 2),
+(34567890, 'Personal3', 'Apellido1', 'Apellido2', 'Cargo 3', 3),
+(45678901, 'Personal4', 'Apellido1', 'Apellido2', 'Cargo 4', 4),
+(56789012, 'Personal5', 'Apellido1', 'Apellido2', 'Cargo 5', 5);
+
+-- Insertar datos en la tabla Categoria
+INSERT INTO `Categoria` (`idCategoria`, `nombre`) VALUES
+(1, 'Categoria 1'),
+(2, 'Categoria 2'),
+(3, 'Categoria 3'),
+(4, 'Categoria 4'),
+(5, 'Categoria 5');
+
+-- Insertar datos en la tabla Contrato
+INSERT INTO `Contrato` (`idContrato`, `fecha_fin`, `fecha_inicio`, `detalles`, `est_contrato`, `idConcesionaria1`, `idAdministracion1`) VALUES
+(1, '2024-12-31', '2024-01-01', 'Detalles 1', 'Activo', 1, 1),
+(2, '2025-12-31', '2025-01-01', 'Detalles 2', 'Activo', 2, 2),
+(3, '2026-12-31', '2026-01-01', 'Detalles 3', 'Activo', 3, 3),
+(4, '2027-12-31', '2027-01-01', 'Detalles 4', 'Activo', 4, 4),
+(5, '2028-12-31', '2028-01-01', 'Detalles 5', 'Activo', 5, 5);
+
+-- Restaurar las configuraciones iniciales
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FORE
