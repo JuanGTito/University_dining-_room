@@ -63,7 +63,7 @@ INSERT INTO `Menu` (`idMenu`, `fecha`, `tip_menu`, `idConcecionaria`) VALUES
 (5, '2024-05-01', 'Desayuno', 5);
 
 -- Insertar datos en la tabla Comida
-INSERT INTO `Comida` (`idComida`, `nombre`, `info_nutricional`, `ingredientes`, `descripcion`, `idMenu`) VALUES
+INSERT INTO `Comida` (`idComida`, `nombre`, `info_nutricional`, `ingredientes`, `idMenu`) VALUES
 (1, 'Comida 1', 'Info 1', 'Ingrediente 1', 1),
 (2, 'Comida 2', 'Info 2', 'Ingrediente 2', 2),
 (3, 'Comida 3', 'Info 3', 'Ingrediente 3', 3),
