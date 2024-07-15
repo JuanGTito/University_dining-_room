@@ -64,11 +64,11 @@ INSERT INTO `Menu` (`idMenu`, `fecha`, `tip_menu`, `idConcecionaria`) VALUES
 
 -- Insertar datos en la tabla Comida
 INSERT INTO `Comida` (`idComida`, `nombre`, `info_nutricional`, `ingredientes`, `descripcion`, `idMenu`) VALUES
-(1, 'Comida 1', 'Info 1', 'Ingrediente 1', 'Descripcion 1', 1),
-(2, 'Comida 2', 'Info 2', 'Ingrediente 2', 'Descripcion 2', 2),
-(3, 'Comida 3', 'Info 3', 'Ingrediente 3', 'Descripcion 3', 3),
-(4, 'Comida 4', 'Info 4', 'Ingrediente 4', 'Descripcion 4', 4),
-(5, 'Comida 5', 'Info 5', 'Ingrediente 5', 'Descripcion 5', 5);
+(1, 'Comida 1', 'Info 1', 'Ingrediente 1', 1),
+(2, 'Comida 2', 'Info 2', 'Ingrediente 2', 2),
+(3, 'Comida 3', 'Info 3', 'Ingrediente 3', 3),
+(4, 'Comida 4', 'Info 4', 'Ingrediente 4', 4),
+(5, 'Comida 5', 'Info 5', 'Ingrediente 5', 5);
 
 -- Insertar datos en la tabla Personal
 INSERT INTO `Personal` (`dni`, `nombre`, `ape_paterno`, `ape_materno`, `cargo`, `idConcesionaria2`) VALUES
