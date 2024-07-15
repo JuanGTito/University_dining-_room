@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/register.css">
     <title>Register</title>
 </head>
 <body>
@@ -12,57 +13,40 @@
             <div class=" telefono">+123 456 789</div>
         </div>
         <div class="right-info">
-            <a href="#">login</a>
+            <a href="#">Salir</a>
         </div>
     </header>
     <Main>
-        <section>
-            <p>buscar por codigo o dni</p>
-            <input type="text">
+        <section class="input-search">
+            <div class="search-info">
+                <p>Estudiantes</p>
+                <input type="text" placeholder="Codigo/DNI">
+                <button>BUSCAR</button>
+            </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Codigo</th>
+                            <th>DNI</th>
+                            <th>Nombre y Apellidos</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <button>Registrar</button>
+            </div>
         </section>
-        <section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>codigo</th>
-                        <th>DNI</th>
-                        <th>nombre</th>
-                        <th>apellidos</th>
-                        <th>escuela profesional</th>
-                        <th>estado beca</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Lunes</td>
-                        <td>Avena, Frutas, Café</td>
-                        <td>Pollo a la plancha, Ensalada, Arroz</td>
-                    </tr>
-                    <tr>
-                        <td>Martes</td>
-                        <td>Huevos revueltos, Pan tostado, Jugo</td>
-                        <td>Pasta con salsa, Vegetales, Jugo</td>
-                    </tr>
-                    <tr>
-                        <td>Miércoles</td>
-                        <td>Yogur, Granola, Frutas</td>
-                        <td>Carne asada, Papas, Ensalada</td>
-                    </tr>
-                    <tr>
-                        <td>Jueves</td>
-                        <td>Pancakes, Miel, Frutas</td>
-                        <td>Pescado, Arroz, Verduras</td>
-                    </tr>
-                    <tr>
-                        <td>Viernes</td>
-                        <td>Cereal, Leche, Frutas</td>
-                        <td>Pollo al horno, Puré de papas, Ensalada</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        <section>
+        <section class="info-start">
+            <section>
             <button>INICIAR REGISTRO</button>
+            </section>
         </section>
     </Main>
 </body>
