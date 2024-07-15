@@ -15,25 +15,45 @@
             <div class=" telefono">+123 456 789</div>
         </div>
         <div class="right-info">
-            <button id="myButton">Menu</button>
-            <a href="login.html">¿Quienes Somos?</a>
-            <a href="login.html">Iniciar Sesion</a>
+            <button id="myButton"><a>Menu</a></button>
+            <button id="myButton1"><a>¿Quienes Somos?</a></button>
+            <button id="myButton2"><a href="login.html">Iniciar Sesion</a></button>
         </div>
     </header>
     <Main>
-        <section class="limite-capacidad">
+       <section class="img-1">
+            <img src="/assets/img/font-img/imgf-7.png" alt="">
+            <img src="/assets/img/font-img/imgf-8.png" alt="">
+       </section> 
+       <section class="img-2">
             <div>
-                <p>Sitios Disponibles</p>
-                <p><span>54</span></p>   
+                <img class="portada" src="/assets/img/background/PORTADA_WEB.png" alt="">
             </div>
-            
-        </section>
+            <div class="img-log">
+                <img src="/assets/img/font-img/imgf-1.png" alt="">
+                <img src="/assets/img/font-img/imgf-2.png" alt="">
+                <img src="/assets/img/font-img/imgf-3.png" alt="">
+                <img src="/assets/img/font-img/imgf-4.png" alt="">
+                <img src="/assets/img/font-img/imgf-5.png" alt="">
+                <img src="/assets/img/font-img/imgf-6.png" alt=""> 
+            </div>
+       </section> 
+       <section class="img-3">
         
-        <section class="menu">
+       </section> 
+    </Main>
+    <script>
+        var tableContent = `
             <h2>Degustación Semanal</h2>
             <hr>
-            <table>
-                
+            <table border="1" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="menu-diario">Desayuno</th>
+                        <th class="menu-diario">Almuerzo</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td class="dia-semanal">Lunes</td>
@@ -62,9 +82,12 @@
                     </tr>
                 </tbody>
             </table>
-            <hr>
-        </section>
-    </Main>
-    <script src="../controllers/index-action.js"></script>
+        `;
+        document.getElementById('myButton').onclick = function() {
+            alertify.alert('Menu Principal', tableContent, function(){
+                alertify.success('Ok');
+            });
+        };
+    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Outfit:wght@100..900&display=swap');
 body{
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/img/background/img-1.jpg");
+    /*background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/img/background/img-1.jpg");*/
+    background-color: white;
     margin: 0;
     padding: 0;
 }
@@ -24,60 +25,40 @@ body{
     display: flex;
     align-items: center;
 }
-.right-info a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    background-color: #333;
-    border-radius: 4px;
-    margin-left: 20px;
-}
 .right-info button {
     color: white;
-    text-decoration: none;
-    padding: 8px 16px;
+    padding: 8px 15px;
     background-color: #333;
-    border-radius: 4px;
-    margin-left: 20px;
-}
-.limite-capacidad{
-    display: flex;
-    justify-content: center;
-    padding: 30px;
-}
-.limite-capacidad div{
-    background-color: rgb(193, 198, 202, 0.6);
-    padding: 10px;
-    border-radius: 15px;
-}
-.limite-capacidad div p{
+    border-radius: 8px;
     text-align: center;
-    font-weight: 700;
+    border: none;
+    margin: 10px;
+}
+.right-info button a {
+    color: white;
+    text-decoration: none;
 }
 main{
-    margin: 250;
+    display: flex;
+    align-items: center
 }
-.menu{
+.img-1{
+    display: flex;
+    
+}
+.img-1 img{
+    margin: 15px;
+    width: 50px;
+}
+.img-2{
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(193, 198, 202);
-    margin: 0 250px;
-    padding: 1rem 2rem;
 }
-hr {
-    height: 2px;
-    width: 100%;
-    background-color: rgb(42, 61, 165);
-    border-color: rgb(61, 42, 165);
-  }
-.menu-diario{
-    padding: 1rem 0;
+.img-2 .portada{
+  width: 50%;
 }
-.dia-semanal{
-    padding: 12px 20px;
-}
-.comida-diaria{
-    padding: 0 20px;
-    text-align: center;
+.img-log img {
+    margin: 10px;
+    width: 50px;
 }
