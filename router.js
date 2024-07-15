@@ -2,16 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const conexion = require('./conection/conexion')
+//const LoginController = require('./controllers/loginController');
 
 router.get('/', (req, res) =>{
     res.render('inicio')
-    /*conexion.query('SELECT * FROM estudiante', (error, results)=>{
-        if (error) {
-            throw error;
-        } else {
-            res.send(results);
-        }
-    })*/
 })
+//router.get('/login', LoginController.login);
+//router.post('/auth', LoginController.auth);
+//router.get('/logout', LoginController.logout);
 
 module.exports = router

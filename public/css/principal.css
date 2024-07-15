@@ -32,6 +32,14 @@ body{
     border-radius: 4px;
     margin-left: 20px;
 }
+.right-info button {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    background-color: #333;
+    border-radius: 4px;
+    margin-left: 20px;
+}
 .limite-capacidad{
     display: flex;
     justify-content: center;

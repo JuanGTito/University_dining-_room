@@ -1,39 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comedor Universitario</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/assets/css/principal.css">
-</head>
-<body>
-    <header class="cabecera">
-        <div class="left-info">
-            <div class="direccion">Calle Falsa 123, Ciudad, País</div>
-            <div class=" telefono">+123 456 789</div>
-        </div>
-        <div class="right-info">
-            <button id="myButton">Menu</button>
-            <a href="login.html">¿Quienes Somos?</a>
-            <a href="login.html">Iniciar Sesion</a>
-        </div>
-    </header>
-    <Main>
-        <section class="limite-capacidad">
-            <div>
-                <p>Sitios Disponibles</p>
-                <p><span>54</span></p>   
-            </div>
-            
-        </section>
-        
-        <section class="menu">
+var tableContent = `
             <h2>Degustación Semanal</h2>
             <hr>
-            <table>
-                
+            <table border="1" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="menu-diario">Desayuno</th>
+                        <th class="menu-diario">Almuerzo</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td class="dia-semanal">Lunes</td>
@@ -62,9 +37,9 @@
                     </tr>
                 </tbody>
             </table>
-            <hr>
-        </section>
-    </Main>
-    <script src="../controllers/index-action.js"></script>
-</body>
-</html>
+        `;
+        document.getElementById('myButton').onclick = function() {
+            alertify.alert('Alert Title', tableContent, function(){
+                alertify.success('Ok');
+            });
+        };

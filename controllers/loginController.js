@@ -3,17 +3,13 @@ const bcrypt = require('bcrypt');
 function login(req, res) {
     if (req.session.loggedin) {
           if(req.session.loggedin != true)
-      res.redirect('login/index');
+      res.redirect('login/inicio');
       
     } else {
       res.render('/');
     }
   }
-  
-  function register(req, res) {
-    res.render('login/register');
-  }
-  
+
 function auth(req, res) {
     const data = req.body;
   
@@ -36,12 +32,6 @@ function auth(req, res) {
                 } else {
                     res.render('login/index', {error: 'error: user not exists !'})
                     }
-        /*
-        req.session.loggedin = true;
-      req.session.name = name;
-  
-    res.redirect('/');*/
-        
       });
     });
   }
@@ -56,7 +46,6 @@ function auth(req, res) {
   
   module.exports = {
     login: login,
-    register: register,
     auth: auth,
     logout: logout,
   }
