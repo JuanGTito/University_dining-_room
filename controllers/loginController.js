@@ -1,51 +1,43 @@
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
+const connection= require('../conection/conexion');
 
-function login(req, res) {
-    if (req.session.loggedin) {
-          if(req.session.loggedin != true)
-      res.redirect('login/inicio');
-      
-    } else {
-      res.render('/');
-    }
-  }
+async function auth(req, res) {
+  const user = req.body.user;
+  const pass = req.body.pass;
 
-function auth(req, res) {
-    const data = req.body;
-  
-    req.getConnection((err, conn) => {
-        conn.query('SELECT * FROM users WHERE email = ?', [data.email], (err, userdata) => {
-            if(userdata.length > 0) {
-                userdata.forEach(element => {
-                    bcrypt.compare(data.password, element.password, (err, isMatch) => {
-                        if (!isMatch) {
-                            res.render('login/index', {error: 'error: incorrect password'});
-                        } else {
-                            req.session.loggedin = true;
-                            req.session.name  = element.name;
+  let passwordHaash = await bcryptjs.hash(pass, 8);
 
-                            res.redirect('/')
+  if (user && pass) {
+		connection.query('SELECT * FROM users WHERE usuario = ?', [user], async (error, results, fields)=> {
+			if( results.length == 0 || !(await bcryptjs.compare(pass, results[0].contrasenia)) ) {    
+				res.render('login', {
+                        alert: true,
+                        alertTitle: "Error",
+                        alertMessage: "USUARIO y/o PASSWORD incorrectas",
+                        alertIcon:'error',
+                        showConfirmButton: true,
+                        timer: false,
+                        ruta: 'login'    
+                    });				
+			} else {               
+				req.session.loggedin = true;                
+				req.session.name = results[0].name;
+				res.render('login', {
+					alert: true,
+					alertTitle: "Conexión exitosa",
+					alertMessage: "¡LOGIN CORRECTO!",
+					alertIcon:'success',
+					showConfirmButton: false,
+					timer: 1500,
+					ruta: 'register'
+				});        			
+			}			
+			res.end();
+		});
+	} else {	
+		res.send('Please enter user and Password!');
+		res.end();
+	}
+}
 
-                        }
-                    });
-                });
-                } else {
-                    res.render('login/index', {error: 'error: user not exists !'})
-                    }
-      });
-    });
-  }
-  
-  function logout(req, res) {
-    if (req.session.loggedin == true) {
-      req.session.destroy();
-    }
-    res.redirect('/');
-  }
-  
-  
-  module.exports = {
-    login: login,
-    auth: auth,
-    logout: logout,
-  }
+module.exports = auth;

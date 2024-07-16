@@ -2,52 +2,45 @@
 
 body{
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/img/background/img-2.jpg");
-    margin: 0;
-    padding: 0;
+    margin: auto;
+    text-align: center;
 }
 
-main{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 15% 35%;
-    padding: 20px;
-    height: 20vh;
+.login-form, .contenedor{
+    width: 300px;
+    margin: 0 auto;
 }
 
-.login{
-    display: flex;
-    flex-direction: column;
-    background: rgba(12, 13, 70, 0.2);
-    padding: 30px;
-    border-radius: 20px;
+.login-form h1{
+    text-align: center;
+    color: midnightblue;
+    font-size: 28px;
+    padding: 70px 0 10px 0;
+}
+.login-form input[type="password"],
+.login-form input[type="text"]{
     width: 100%;
+    padding: 15px;
+    border: 1px solid #ced4da;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.btn-login{
+    width: 100%;
+    padding: 15px;
+    background-color: #6f42c1;
+    border: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+}
+.btn-login:hover, .btn-login:active{
+    color: #fff;
+    background-color: #61428f;
+    border-color: #61428f;
 }
 
-.iniciar-sesion{
-    text-align: center;
-    font-family: "Outfit", sans-serif;
-    font-weight: 700;
-}
-.login p{
-    font-family: "Outfit", sans-serif;
-}
-.login input{
-    border: 2px solid rgba(12, 13, 70, 0.2);
-    border-radius: 10px;
-    padding: 6px;
-    margin-bottom: 1rem;
-}
-.login span{
-    font-family: "Outfit", sans-serif;
-    text-align: center;
-    padding-bottom: 10px;
-}
-
-button{
-    margin: 0 5rem;
-    font-family: "Outfit", sans-serif;
-    font-weight: 700;
-    border-radius: 5px;
-    border: 2px solid rgba(12, 13, 70, 0.2);;
+.btn-login:focus{
+    box-shadow: 0 0 0 3px rgba(121, 82, 179, 0.25);
 }

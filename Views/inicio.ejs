@@ -15,9 +15,16 @@
             <div class=" telefono">+123 456 789</div>
         </div>
         <div class="right-info">
-            <button id="myButton"><a>Menu</a></button>
-            <button id="myButton1"><a>¿Quienes Somos?</a></button>
-            <button id="myButton2"><a href="login.html">Iniciar Sesion</a></button>
+            <button><a>Menu</a></button>
+            <button><a>¿Quienes Somos?</a></button>
+            <button>
+                <% if (login) { %>                                        
+                    <a href="logout" class="a-logout">Salir</a>
+                <%} else { %>
+                    <h1><strong><%= name %></strong></h1>   
+                    <a href="login" class="a-login">Iniciar Sesion</a>
+                <% } %>
+            </button> 
         </div>
     </header>
     <Main> 
@@ -27,8 +34,10 @@
                 <img class="portada" src="/assets/img/background/PORTADA_WEB.png" alt="">
             </div>
             <div class="img-log">
-                <img src="/assets/img/font-img/imgf-1.png" alt="">
-                <img src="/assets/img/font-img/imgf-2.png" alt="">
+                <a href="https://www.veritasint.com/blog/es/mejora-tu-salud-con-10-consejos-nutricionales/">
+                    <img src="/assets/img/font-img/imgf-1.png" alt="">
+                    <img src="/assets/img/font-img/imgf-2.png" alt="">
+                </a>
                 <img src="/assets/img/font-img/imgf-3.png" alt="">
                 <img src="/assets/img/font-img/imgf-4.png" alt="">
                 <img src="/assets/img/font-img/imgf-5.png" alt="">
@@ -77,8 +86,18 @@
                 </tbody>
             </table>
         `;
+        var quienesSomos = `
+            <p>
+                Bienvenidos al Comedor Universitario de la Universidad Nacional De Juliaca. Somos un espacio dedicado a proporcionar a nuestra comunidad estudiantil, una alimentación balanceada, saludable y accesible. Nuestro objetivo es no solo satisfacer las necesidades nutricionales, sino también fomentar hábitos alimenticios saludables y sostenibles.
+            </p>
+        `;
         document.getElementById('myButton').onclick = function() {
             alertify.alert('Menu Principal', tableContent, function(){
+                alertify.success('Ok');
+            });
+        };
+        document.getElementById('myButton1').onclick = function() {
+            alertify.alert('Quines Somos', quienesSomos, function(){
                 alertify.success('Ok');
             });
         };
