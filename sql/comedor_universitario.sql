@@ -24,7 +24,7 @@ USE `comedor_universitario` ;
 CREATE TABLE IF NOT EXISTS `comedor_universitario`.`users` (
   `idusers` INT NOT NULL AUTO_INCREMENT,
   `usuario` VARCHAR(45) NOT NULL,
-  `contrasenia` VARCHAR(45) NOT NULL,
+  `contrasenia` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`idusers`))
 ENGINE = InnoDB;
 
@@ -316,12 +316,6 @@ CREATE TABLE IF NOT EXISTS `comedor_universitario`.`regis_compra` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 -- Insertar datos en la tabla users
-INSERT INTO `users` (`idusers`, `usuario`, `contrasenia`) VALUES
-(1, 'usuario1', 'contrasenia1'),
-(2, 'usuario2', 'contrasenia2'),
-(3, 'usuario3', 'contrasenia3'),
-(4, 'usuario4', 'contrasenia4'),
-(5, 'usuario5', 'contrasenia5');
 
 -- Insertar datos en la tabla Administracion
 INSERT INTO `Administracion` (`idAdministracion`, `dep_responsable`, `cargo_dep`, `nombre`, `ape_paterno`, `ape_materno`, `telefono`, `correo`, `idusers`) VALUES

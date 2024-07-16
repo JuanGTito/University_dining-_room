@@ -5,17 +5,10 @@
 
     //Con variables de entorno      
     var conexion = mysql.createConnection({
-<<<<<<< HEAD
     host    : process.env.DB_HOST,
     database: process.env.DB_DATABASE,
     user    : process.env.DB_USER,
     password: process.env.DB_PASS 
-=======
-    host: "localhost",
-    database: "comedor_universitario",
-    user: "root", //admin
-    password: "root" //admin
->>>>>>> 161333b563d9d1d3244ea73420a8998fb1b5375c
 });
 
 conexion.connect((error)=>{
@@ -28,6 +21,7 @@ conexion.connect((error)=>{
 });
 
 //REGISTRAR USUSARIO PRUEBA
+//SOLO EJECUTAR EN PRIMERA VEZ COMO PRUEBA ANTES DE ENVIAR LOS RESPECTIVOS USUARIOS
 
 //async function registerUser(user, pass) {
 //    try {
@@ -45,7 +39,7 @@ conexion.connect((error)=>{
 //    }
 //}
 //
-// Llamar a la función de registro
-//registerUser("admin", "12345");12345
-
-module.exports = conexion;
+// //Llamar a la función de registro
+//registerUser("admin", "12345");
+//
+//module.exports = conexion;
