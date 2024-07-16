@@ -15,11 +15,11 @@
             <div class=" telefono">+123 456 789</div>
         </div>
         <div class="right-info">
-            <button><a>Menu</a></button>
-            <button><a>¿Quienes Somos?</a></button>
+            <button id="myButton"><a>Menu</a></button>
+            <button id="myButton1"><a>¿Quienes Somos?</a></button>
             <button>
                 <% if (login) { %>                                        
-                    <a href="logout" class="a-logout">Salir</a>
+                    <button><a href="logout" class="a-logout">Salir</a></button>
                 <%} else { %>
                     <h1><strong><%= name %></strong></h1>   
                     <a href="login" class="a-login">Iniciar Sesion</a>
