@@ -1,6 +1,5 @@
 //2 - Invocamos a MySQL y realizamos la conexion
     const mysql = require('mysql');
-
     const bcrypt = require('bcryptjs');
 
     //Con variables de entorno      
@@ -42,4 +41,4 @@ conexion.connect((error)=>{
 // //Llamar a la función de registro
 //registerUser("admin", "12345");
 //
-//module.exports = conexion;
+module.exports = conexion;

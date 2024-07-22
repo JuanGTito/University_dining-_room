@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const conexion = require('./conection/conexion')
+const conexion = require('./conection/conexion');
 const authController = require('./controllers/loginController');
+const supervisarController = require('./controllers/supervisor');
 
 router.post('/auth', authController);
 
@@ -10,7 +11,10 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
+//router.get('/search', supervisarController);
+
 router.get('/register', (req, res) => {
+	
     if (req.session.loggedin) {
 		res.render('register',{
 			login: true,
@@ -22,8 +26,9 @@ router.get('/register', (req, res) => {
 			name: req.session.name,			
 		});				
 	}
-	res.end();
 });
+
+
 
 router.get('/', (req, res)=> {
 	if (req.session.loggedin) {

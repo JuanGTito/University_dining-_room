@@ -34,7 +34,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th></th>
                             <th>Codigo</th>
                             <th>DNI</th>
                             <th>Nombre y Apellidos</th>
@@ -42,6 +41,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
+                            <% results.forEach((user) => { %>
+                            <tr>
+                                <td></td>
+                                <td><%= user.codigoestudiante %></td>
+                                <td><%= user.dni %></td>
+                                <td><%= user.nombre %></td>
+                                <td><%= user.est_beca %></td>
+                            </tr>
+                            <% }) %>
                         
                     </tbody>
                 </table>
