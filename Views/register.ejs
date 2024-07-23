@@ -30,14 +30,16 @@
                 <input type="text" placeholder="Codigo/DNI">
                 <button>BUSCAR</button>
             </div>
-            <div>
+            <div class="info-list">
                 <table>
                     <thead>
                         <tr>
+                            <th></th>
                             <th>Codigo</th>
                             <th>DNI</th>
                             <th>Nombre y Apellidos</th>
                             <th>Estado</th>
+                            <th>Tipo Beca</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,6 +51,7 @@
                                 <td><%= user.dni %></td>
                                 <td><%= user.nombre %></td>
                                 <td><%= user.est_beca %></td>
+                                <td><%= user.tip_beca %></td>
                             </tr>
                             <% }) %>
                         

@@ -11,7 +11,7 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
-//router.get('/search', supervisarController);
+router.get('/register', supervisarController);
 
 router.get('/register', (req, res) => {
 	

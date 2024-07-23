@@ -31,10 +31,12 @@ header {
     border-radius: 4px;
     margin-left: 20px;
 }
+
 main{
     display: flex;
     padding: 20px;
     font-family: "Outfit", sans-serif;
+    height: 70vh;
 }
 .input-search{
     background-color: aliceblue;
@@ -63,4 +65,7 @@ main{
     padding: 0.5rem 5%;
     background-color: aqua;
     border: none;
+}
+.info-list{
+    width: 100%;
 }
