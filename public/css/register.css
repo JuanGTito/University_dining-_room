@@ -36,29 +36,37 @@ main{
     display: flex;
     padding: 20px;
     font-family: "Outfit", sans-serif;
-    height: 70vh;
 }
 .input-search{
     background-color: aliceblue;
     margin-right: 10px;
+    height: 90vh;
+    width: 70%;
 }
 .search-info{
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
+.search-info form{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+}
 .search-info p{
     font-size: 20px;
     font-weight: 700;
 }
-.search-info input{
+.search-info  form input{
     font-size: 20px;
     font-weight: 700;
     border-radius: 15px;
     border: none;
     padding: 0.5rem;
+    margin: 1rem;
 }
-.search-info button{
+.search-info form button{
     font-size: 20px;
     font-weight: 700;
     border-radius: 15px;
@@ -67,5 +75,20 @@ main{
     border: none;
 }
 .info-list{
+    height: 85%;
+}
+.info-list table{
     width: 100%;
+    text-align: center;
+}
+
+.button-register{
+    text-align: right;
+    padding: 0.5rem 5%;
+}
+
+.info-start{
+    background-color: aliceblue;
+    height: 90vh;
+    width: 30%;
 }

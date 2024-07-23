@@ -16,57 +16,81 @@
             <button>
                 <% if (login) { %>                                        
                     <a href="logout" class="a-logout">Salir</a>
-                <%} else { %>
-                    <h1><strong><%= name %></strong></h1>   
+                <%} else { %>  
                     <a href="login" class="a-login">Iniciar Sesion</a>
                 <% } %>
             </button>
         </div>
     </header>
-    <Main>
+    <main>
         <section class="input-search">
             <div class="search-info">
                 <p>Estudiantes</p>
-                <input type="text" placeholder="Codigo/DNI">
-                <button>BUSCAR</button>
+                <form id="searchForm" action="/searchList" method="post">
+                    <input type="text" name="codigo" id="codigo" placeholder="Codigo/DNI">
+                    <button type="button" id="scanButton">ESCANEAR</button>
+                    <button type="submit">BUSCAR</button>
+                </form>
             </div>
             <div class="info-list">
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Codigo</th>
-                            <th>DNI</th>
-                            <th>Nombre y Apellidos</th>
-                            <th>Estado</th>
-                            <th>Tipo Beca</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
+                <form action="/register" method="post">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Código</th>
+                                <th>DNI</th>
+                                <th>Nombre y Apellidos</th>
+                                <th>Estado</th>
+                                <th>Carrera</th>
+                            </tr>
+                        </thead>
+                        <tbody> 
                             <% results.forEach((user) => { %>
                             <tr>
-                                <td></td>
+                                <td class="check"><input type="radio" name="selectedStudent" value="<%= user.codigoestudiante %>"></td>
                                 <td><%= user.codigoestudiante %></td>
                                 <td><%= user.dni %></td>
                                 <td><%= user.nombre %></td>
                                 <td><%= user.est_beca %></td>
-                                <td><%= user.tip_beca %></td>
+                                <td><%= user.nom_carrera %></td>
                             </tr>
-                            <% }) %>
-                        
-                    </tbody>
-                </table>
-            </div>
-            <div>
-                <button>Registrar</button>
+                            <% }) %> 
+                        </tbody>
+                    </table>
+                    <div class="button-register">
+                        <button type="submit">Registrar</button>
+                    </div>
+                </form>
             </div>
         </section>
         <section class="info-start">
-            <section>
+            <h1>DESAYUNO</h1>
+            <h2> 48 / 120</h2>
+            <P>EL REPORTE ES PARA DESCARGAR EL REPORTE DE ESTUDIANTES QUE INGRESO EN EL DESAYUNO O ALMUERZO</P>
+            <button>REPORTE</button>
+            <br>
             <button>INICIAR REGISTRO</button>
-            </section>
         </section>
-    </Main>
+    </main>
+
+    <!-- Include HTML5 QR Code library -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script>
+        document.getElementById('scanButton').addEventListener('click', () => {
+            const qrCodeReader = new Html5Qrcode("reader");
+            qrCodeReader.start({ facingMode: "environment" }, { fps: 10 }, (decodedText) => {
+                document.getElementById('codigo').value = decodedText;
+                qrCodeReader.stop().then(() => {
+                    document.getElementById('searchForm').submit();
+                });
+            }).catch(err => {
+                console.error(err);
+                alert('Error al escanear el código QR.');
+            });
+        });
+    </script>
+
+    <div id="reader" style="width: 100%; height: 300px;"></div>
 </body>
 </html>

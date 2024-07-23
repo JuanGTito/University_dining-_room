@@ -11,10 +11,12 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
-router.get('/register', supervisarController);
+router.post('/searchList', supervisarController.searchList);
+
+router.get('/register', supervisarController.showList);
+router.post('/register', supervisarController.registerAttendance);
 
 router.get('/register', (req, res) => {
-	
     if (req.session.loggedin) {
 		res.render('register',{
 			login: true,
@@ -27,8 +29,6 @@ router.get('/register', (req, res) => {
 		});				
 	}
 });
-
-
 
 router.get('/', (req, res)=> {
 	if (req.session.loggedin) {

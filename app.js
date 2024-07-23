@@ -1,5 +1,6 @@
 // 1 - Invocamos a Express
 const express = require('express');
+const session = require('express-session');
 const app = express();
 const path = require('path');
 
@@ -18,13 +19,9 @@ app.use(express.static('views'))
 //5 - Establecemos el motor de plantillas
 app.set('view engine', 'ejs');
 
-//6 -Invocamos a bcrypt
-const bcrypt = require('bcryptjs');
-
 //7- variables de session
-const session = require('express-session');
 app.use(session({
-	secret: 'secret',
+	secret: process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: true
 }));

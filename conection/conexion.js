@@ -40,5 +40,5 @@ conexion.connect((error)=>{
 //
 // //Llamar a la función de registro
 //registerUser("admin", "12345");
-//
+
 module.exports = conexion;
