@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/register.css">
     <title>Register</title>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
     <header>
@@ -75,20 +76,30 @@
     </main>
 
     <!-- Include HTML5 QR Code library -->
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
         document.getElementById('scanButton').addEventListener('click', () => {
+    Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
             const qrCodeReader = new Html5Qrcode("reader");
             qrCodeReader.start({ facingMode: "environment" }, { fps: 10 }, (decodedText) => {
                 document.getElementById('codigo').value = decodedText;
                 qrCodeReader.stop().then(() => {
                     document.getElementById('searchForm').submit();
+                }).catch(err => {
+                    console.error("Error stopping the QR code scanner: ", err);
                 });
             }).catch(err => {
-                console.error(err);
+                console.error("Error starting the QR code scanner: ", err);
                 alert('Error al escanear el código QR.');
             });
-        });
+        } else {
+            console.error("No cameras found.");
+        }
+    }).catch(err => {
+        console.error("Error fetching cameras: ", err);
+    });
+});
+
     </script>
 
     <div id="reader" style="width: 100%; height: 300px;"></div>
