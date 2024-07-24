@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Outfit:wght@100..900&display=swap');
+
 body{
     margin: 0;
     padding: 0;
@@ -74,8 +75,24 @@ main{
     background-color: aqua;
     border: none;
 }
-.info-list{
-    height: 85%;
+.table-container {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    background-color: #f4f4f4;
 }
 .info-list table{
     width: 100%;
@@ -85,10 +102,71 @@ main{
 .button-register{
     text-align: right;
     padding: 0.5rem 5%;
+    
+}
+.button-register button{
+    font-size: 20px;
+    font-weight: 400px;
+    border-radius: 15px;
+    padding: 0.5rem 5%;
+    background-color: #333;
+    color: white;
+    border: none;
+    text-align: center;
 }
 
 .info-start{
     background-color: aliceblue;
     height: 90vh;
     width: 30%;
+}
+.info-start{
+    padding-top: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-start h1{
+    font-size: 40px;
+    font-weight: 700px;
+    border-radius: 15px;
+    padding: 0.5rem 5%;
+    background-color: aqua;
+    border: none;
+    margin: 1rem 3rem;
+    text-align: center;
+}
+.info-start h2{
+    font-size: 30px;
+    font-weight: 400px;
+    border-radius: 15px;
+    padding: 0.5rem 5%;
+    background-color: aqua;
+    border: none;
+    margin: 1rem 3rem;
+    text-align: center;
+}
+.info-start p{
+    font-size: 20px;
+    font-weight: 100px;
+    border-radius: 15px;
+    padding: 0.5rem 5%;
+    background-color: aqua;
+    border: none;
+    margin: 1rem 3rem;
+    text-align: center;
+}
+
+.info-start button{
+    font-size: 20px;
+    font-weight: 400px;
+    border-radius: 15px;
+    padding: 0.5rem 5%;
+    background-color: #333;
+    color: white;
+    border: none;
+    margin: 1rem 3rem;
+    text-align: center;
+    
 }

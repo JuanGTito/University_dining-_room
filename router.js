@@ -11,38 +11,18 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
-router.post('/searchList', supervisarController.searchList);
+router.get('/', (req, res) => {
+    res.render('inicio', {
+        login: req.session.loggedin || false,
+        name: req.session.name || ''
+    });
+});
+
 
 router.get('/register', supervisarController.showList);
+router.post('/searchList', supervisarController.searchList);
 router.post('/register', supervisarController.registerAttendance);
-
-router.get('/register', (req, res) => {
-    if (req.session.loggedin) {
-		res.render('register',{
-			login: true,
-			name: req.session.name			
-		});		
-	} else {
-		res.render('register',{
-			login:false,
-			name: req.session.name,			
-		});				
-	}
-});
-
-router.get('/', (req, res)=> {
-	if (req.session.loggedin) {
-		res.render('inicio',{
-			login: true,
-			name: req.session.name			
-		});		
-	} else {
-		res.render('inicio',{
-			login:false,
-			name: req.session.name,			
-		});				
-	}
-	res.end();
-});
+router.post('/autoRegister', supervisarController.autoRegister);
+router.get('/generateReport', supervisarController.generateReport);
 
 module.exports = router
