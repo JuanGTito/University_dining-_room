@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <title>Register</title>
+    <title>Administracion</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
@@ -27,87 +27,51 @@
     <main>
         <section class="input-search">
             <div class="search-info">
-                <p>Estudiantes</p>
-                <form id="searchForm" action="/searchList" method="post">
+                <p>Administrador</p>
+                <form id="searchForm" action="/searchListAdm" method="post">
                     <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI">
-                    <button type="button" id="scanButton">ESCANEAR</button>
                     <button type="submit">BUSCAR</button>
-                </form>
-                <form id="autoRegisterForm" action="/autoRegister" method="post" style="display:none;">
-                    <input type="hidden" name="codigo" id="autoCodigo">
                 </form>
             </div>
             <div class="info-list">
-                <form action="/register" method="post">
-                    <div class="table-container">
-                        <table>
-                            <thead>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Código</th>
+                                <th>DNI</th>
+                                <th>Nombre y Apellidos</th>
+                                <th>Estado</th>
+                                <th>Carrera</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% results.forEach((user) => { %>
                                 <tr>
-                                    <th></th>
-                                    <th>Código</th>
-                                    <th>DNI</th>
-                                    <th>Nombre y Apellidos</th>
-                                    <th>Estado</th>
-                                    <th>Carrera</th>
+                                    <td class="check"><input type="radio" name="selectedStudent" value="<%= user.codigoestudiante %>"></td>
+                                    <td><%= user.codigoestudiante %></td>
+                                    <td><%= user.dni %></td>
+                                    <td><%= user.nombre %></td>
+                                    <td><%= user.est_beca %></td>
+                                    <td><%= user.nom_carrera %></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <% results.forEach((user) => { %>
-                                    <tr>
-                                        <td class="check"><input type="radio" name="selectedStudent" value="<%= user.codigoestudiante %>"></td>
-                                        <td><%= user.codigoestudiante %></td>
-                                        <td><%= user.dni %></td>
-                                        <td><%= user.nombre %></td>
-                                        <td><%= user.est_beca %></td>
-                                        <td><%= user.nom_carrera %></td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="button-register">
-                        <button type="submit">Registrar</button>
-                    </div>
-                </form>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
         <section class="info-start">
-            <h1 id="mealTitle">DESAYUNO</h1>
             <h2>48 / 120</h2>
             <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
             <form action="/generateReport" method="get">
                 <button type="submit">Generar Reporte</button>
             </form>
             <br>
-            <button >INICIAR REGISTRO</button>
+            <button>INICIAR REGISTRO</button>
         </section>
     </main>
-
-    <!-- Include HTML5 QR Code library -->
-    <script>
-        document.getElementById('scanButton').addEventListener('click', () => {
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    const qrCodeReader = new Html5Qrcode("reader");
-                    qrCodeReader.start({ facingMode: "environment" }, { fps: 10 }, (decodedText) => {
-                        document.getElementById('autoCodigo').value = decodedText;
-                        qrCodeReader.stop().then(() => {
-                            document.getElementById('autoRegisterForm').submit();
-                        }).catch(err => {
-                            console.error("Error stopping the QR code scanner: ", err);
-                        });
-                    }).catch(err => {
-                        console.error("Error starting the QR code scanner: ", err);
-                        alertify.error('Error al escanear el código QR.');
-                    });
-                } else {
-                    console.error("No cameras found.");
-                }
-            }).catch(err => {
-                console.error("Error fetching cameras: ", err);
-            });
-        });
-    </script>
 
     <script>
         <% if (typeof alertMessage !== 'undefined') { %>
@@ -134,7 +98,5 @@
             }
         <% } %>
     </script>
-
-    <div id="reader" style="width: 100%; height: 300px;"></div>
 </body>
 </html>

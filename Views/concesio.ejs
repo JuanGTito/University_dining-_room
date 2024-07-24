@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comedor Universitario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/principal.css">
+</head>
+<body>
+    <header class="cabecera">
+        <div class="left-info">
+            <div class="direccion">Calle Falsa 123, Ciudad, País</div>
+            <div class=" telefono">+123 456 789</div>
+        </div>
+        <div class="right-info">
+            <button id="myButton"><a>Menu</a></button>
+            <button id="myButton1"><a>¿Quienes Somos?</a></button>
+            <button>
+                <% if (login) { %>                                        
+                    <button><a href="logout" class="a-logout">Salir</a></button>
+                <%} else { %>   
+                    <a href="login" class="a-login">Iniciar Sesion</a>
+                <% } %>
+            </button> 
+        </div>
+    </header>
+    <Main> 
+       <section class="img-2">
+        <H2>COMEDOR UNIVERSITARIO</H2>
+            <div>
+                <img class="portada" src="/assets/img/background/PORTADA_WEB.png" alt="">
+            </div>
+            </div>
+       </section> 
+    </Main>
+</body>
+</html>
