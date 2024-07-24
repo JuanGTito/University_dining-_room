@@ -88,7 +88,10 @@ function registerAttendance(req, res) {
     const login = req.session.loggedin || false;
     const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
+    
+
     if (!codigoestudiante) {
+
         return res.render('register', {
             results: [], // Asegura que se pase results aunque esté vacío
             login: login,
