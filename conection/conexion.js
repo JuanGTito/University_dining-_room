@@ -21,7 +21,7 @@ conexion.connect((error)=>{
 
 //REGISTRAR USUSARIO PRUEBA
 //SOLO EJECUTAR 1 VEZ COMO PRUEBA ANTES DE ENVIAR LOS RESPECTIVOS USUARIOS
-
+//
 //async function registerUser(user, pass) {
 //    try {
 //        const passwordHash = await bcrypt.hash(pass, 8);
@@ -38,7 +38,10 @@ conexion.connect((error)=>{
 //    }
 //}
 //
-// //Llamar a la función de registro
-//registerUser("admin", "12345");
+// //Llamar a la función de registro: admin = 12345----"administrador", "54321"----"nutricionista", "987654"------"supervisor", "789456" ----"concesionaria", "524862"
+//registerUser("administrador", "54321");
+//registerUser("nutricionista", "987654");
+//registerUser("supervisor", "789456");
+//registerUser("concesionaria", "524862");
 
 module.exports = conexion;
