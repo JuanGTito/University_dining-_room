@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/css/adm.css">
+    <link rel="stylesheet" href="../assets/css/adm.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
@@ -28,9 +28,16 @@
         <section class="input-search">
             <div class="search-info">
                 <p>Administrador</p>
-                <form id="searchForm" action="/adm" method="post">
+                <form id="searchForm" action="/searchListAdm" method="post">
                     <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI">
                     <button type="submit">BUSCAR</button>
+                </form>
+            </div>
+            <div class="crud-info">
+                <form id="crudForm" method="post">
+                    <button type="button" onclick="openAddForm()">Agregar</button>
+                    <button type="button" onclick="openUpdateForm()">Modificar</button>
+                    <button type="submit" formaction="/deleteStudent">Eliminar</button>
                 </form>
             </div>
             <div class="info-list">
@@ -71,9 +78,62 @@
             <br>
             <button>INICIAR REGISTRO</button>
         </section>
+
+        <!-- Formularios ocultos para agregar y modificar estudiantes -->
+        <div id="addFormContainer" style="display: none;">
+            <form id="addForm" action="/addStudent" method="post">
+                <input type="text" name="dni" placeholder="DNI" required>
+                <input type="text" name="nombre" placeholder="Nombre y Apellidos" required>
+                <input type="text" name="est_beca" placeholder="Estado" required>
+                <input type="text" name="idcarrera" placeholder="ID Carrera" required>
+                <button type="submit">Agregar</button>
+                <button type="button" onclick="closeAddForm()">Cancelar</button>
+            </form>
+        </div>
+
+        <div id="updateFormContainer" style="display: none;">
+            <form id="updateForm" action="/updateStudent" method="post">
+                <input type="hidden" name="codigoestudiante">
+                <input type="text" name="dni" placeholder="DNI" required>
+                <input type="text" name="nombre" placeholder="Nombre y Apellidos" required>
+                <input type="text" name="est_beca" placeholder="Estado" required>
+                <input type="text" name="idcarrera" placeholder="ID Carrera" required>
+                <button type="submit">Modificar</button>
+                <button type="button" onclick="closeUpdateForm()">Cancelar</button>
+            </form>
+        </div>
     </main>
 
     <script>
+        function openAddForm() {
+            document.getElementById('addFormContainer').style.display = 'block';
+        }
+
+        function closeAddForm() {
+            document.getElementById('addFormContainer').style.display = 'none';
+        }
+
+        function openUpdateForm() {
+            const selectedStudent = document.querySelector('input[name="selectedStudent"]:checked');
+            if (!selectedStudent) {
+                alertify.error('Selecciona un estudiante');
+                return;
+            }
+
+            const form = document.getElementById('updateForm');
+            const tr = selectedStudent.closest('tr');
+            form.codigoestudiante.value = selectedStudent.value;
+            form.dni.value = tr.children[2].innerText;
+            form.nombre.value = tr.children[3].innerText;
+            form.est_beca.value = tr.children[4].innerText;
+            form.idcarrera.value = tr.children[5].innerText;
+            document.getElementById('updateFormContainer').style.display = 'block';
+        }
+
+        function closeUpdateForm() {
+            document.getElementById('updateFormContainer').style.display = 'none';
+        }
+
         <% if (typeof alertMessage !== 'undefined') { %>
             const alertMessage = '<%= alertMessage %>';
             const alertType = '<%= alertType %>';

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/adm.css">
+    <title>Agregar Estudiante</title>
+</head>
+<body>
+    <header>
+        <a href="/adm">Volver</a>
+    </header>
+    <main>
+        <h1>Agregar Estudiante</h1>
+        <form action="/addStudent" method="post">
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" name="dni" required>
+            <label for="nombre">Nombre y Apellidos:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="est_beca">Estado:</label>
+            <input type="text" id="est_beca" name="est_beca" required>
+            <label for="idcarrera">Carrera:</label>
+            <select id="idcarrera" name="idcarrera">
+                <% carreras.forEach((carrera) => { %>
+                    <option value="<%= carrera.idcarrera %>"><%= carrera.nom_carrera %></option>
+                <% }) %>
+            </select>
+            <button type="submit">Agregar</button>
+        </form>
+    </main>
+</body>
+</html>
