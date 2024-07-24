@@ -4,7 +4,7 @@ const router = express.Router();
 const conexion = require('./conection/conexion');
 const authController = require('./controllers/loginController');
 const supervisarController = require('./controllers/supervisor');
-const adminController = require('./controllers/adm')
+const adminController = require('./controllers/administracion')
 
 router.post('/auth', authController.auth);
 
@@ -14,13 +14,6 @@ router.get('/login', (req, res) => {
 
 router.get('/', (req, res) => {
     res.render('inicio', {
-        login: req.session.loggedin || false,
-        name: req.session.name || ''
-    });
-});
-
-router.get('/adm', (req, res) => {
-    res.render('adm', {
         login: req.session.loggedin || false,
         name: req.session.name || ''
     });

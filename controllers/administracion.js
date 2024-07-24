@@ -22,5 +22,5 @@ function showListAdm(req, res) {
 }
 
 module.exports = {
-    showListAdm
+    showListAdm: showListAdm
 };
