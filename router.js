@@ -47,5 +47,12 @@ router.post('/searchList', supervisarController.searchList);
 router.post('/register', supervisarController.registerAttendance);
 router.post('/autoRegister', supervisarController.autoRegister);
 router.get('/generateReport', supervisarController.generateReport);
+router.get('/getTotalStudents', supervisarController.getTotalStudents);
+router.get('/getRegisteredStudentsCount', supervisarController.getRegisteredStudentsCount);
+// Supervisor Routes
+router.get('/getTotalStudents', supervisarController.getTotalStudents);
+router.get('/getRegisteredStudentsCount', supervisarController.getRegisteredStudentsCount);
+
+
 
 module.exports = router

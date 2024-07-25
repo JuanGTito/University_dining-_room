@@ -174,7 +174,6 @@ function registerAttendance(req, res) {
     });
 }
 
-
 // Función para registrar asistencia automáticamente
 function autoRegister(req, res) {
     const codigo = req.body.codigo;
@@ -360,10 +359,34 @@ async function generateReport(req, res) {
     }
 }
 
+function getTotalStudents(req, res) {
+    const sql = 'SELECT COUNT(*) AS total FROM estudiante';
+    connection.query(sql, (error, results) => {
+        if (error) {
+            console.error('Error al obtener el total de estudiantes:', error);
+            return res.status(500).send('Error al obtener el total de estudiantes');
+        }
+        res.json({ total: results[0].total });
+    });
+}
+
+function getRegisteredStudentsCount(req, res) {
+    const sql = 'SELECT COUNT(*) AS count FROM asistencia WHERE DATE(fecha_hora) = CURDATE()';
+    connection.query(sql, (error, results) => {
+        if (error) {
+            console.error('Error al obtener el número de estudiantes registrados:', error);
+            return res.status(500).send('Error al obtener el número de estudiantes registrados');
+        }
+        res.json({ count: results[0].count });
+    });
+}
+
 module.exports = {
     showList : showList,
     searchList: searchList,
     registerAttendance: registerAttendance,
     autoRegister: autoRegister,
-    generateReport: generateReport
+    generateReport: generateReport,
+    getTotalStudents: getTotalStudents,
+    getRegisteredStudentsCount: getRegisteredStudentsCount
 };

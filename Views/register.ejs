@@ -37,6 +37,7 @@
                     <input type="hidden" name="codigo" id="autoCodigo">
                 </form>
             </div>
+
             <div class="info-list">
                 <form action="/register" method="post">
                     <div class="table-container">
@@ -73,7 +74,7 @@
         </section>
         <section class="info-start">
             <h1 id="mealTitle">DESAYUNO</h1>
-            <h2><%= total - registered %> / <%= total %></h2>
+            <h2 id="countDisplay">0 / 0</h2>
             <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
             <form action="/generateReport" method="get">
                 <button type="submit">Generar Reporte</button>
@@ -109,6 +110,28 @@
         });
     </script>
 
+    <script>
+        async function updateStudentCounts() {
+            try {
+                const [totalRes, registeredRes] = await Promise.all([
+                    fetch('/getTotalStudents'),
+                    fetch('/getRegisteredStudentsCount')
+                ]);
+
+                const totalData = await totalRes.json();
+                const registeredData = await registeredRes.json();
+
+                const totalStudents = totalData.total;
+                const registeredStudents = registeredData.count;
+
+                document.getElementById('countDisplay').textContent = `${totalStudents - registeredStudents} / ${totalStudents}`;
+            } catch (error) {
+                console.error('Error al actualizar los conteos:', error);
+            }
+        }
+
+        updateStudentCounts();
+    </script>
     <script>
         <% if (typeof alertMessage !== 'undefined') { %>
             const alertMessage = '<%= alertMessage %>';
