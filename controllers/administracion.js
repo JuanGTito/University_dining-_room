@@ -201,6 +201,8 @@ function deleteStudent(req, res) {
     });
 }
 
+
+
 module.exports = {
     showListAdm,
     searchListAdm,

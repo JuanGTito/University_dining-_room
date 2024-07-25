@@ -80,7 +80,7 @@
                 <button type="submit">Generar Reporte</button>
             </form>
             <br>
-            <button >INICIAR REGISTRO</button>
+            <button id="toggleRegisterBtn">INICIAR REGISTRO</button>
         </section>
     </main>
 
@@ -109,7 +109,27 @@
             });
         });
     </script>
-
+    <script>
+        document.getElementById('toggleRegisterBtn').addEventListener('click', () => {
+            const button = document.getElementById('toggleRegisterBtn');
+            const generateReportBtn = document.getElementById('generateReportBtn');
+            const searchButton = document.querySelector('#searchForm button[type="submit"]');
+            const registerButton = document.querySelector('#registerForm button[type="submit"]');
+    
+            if (button.textContent === 'INICIAR REGISTRO') {
+                button.textContent = 'CERRAR REGISTRO';
+                generateReportBtn.disabled = false;
+                searchButton.disabled = false;
+                registerButton.disabled = false;
+            } else {
+                button.textContent = 'INICIAR REGISTRO';
+                generateReportBtn.disabled = true;
+                searchButton.disabled = true;
+                registerButton.disabled = true;
+            }
+        });
+    </script>
+    
     <script>
         async function updateStudentCounts() {
             try {
