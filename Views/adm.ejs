@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/adm.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/alertify.js/1.13.1/css/alertify.min.css" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <title>Administracion</title>
+    <title>Administración</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
@@ -29,16 +30,14 @@
             <div class="search-info">
                 <p>Administrador</p>
                 <form id="searchForm" action="/searchListAdm" method="post">
-                    <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI">
+                    <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI" required>
                     <button type="submit">BUSCAR</button>
                 </form>
             </div>
             <div class="crud-info">
-                <form id="crudForm" method="post">
-                    <button type="button">Agregar</button>
-                    <button type="button">Modificar</button>
-                    <button type="submit">Eliminar</button>
-                </form>
+                <button type="button" onclick="showAddDialog()">Agregar</button>
+                <button type="button" onclick="showModifyDialog()">Modificar</button>
+                <button type="button" onclick="showDeleteDialog()">Eliminar</button>
             </div>
             <div class="info-list">
                 <div class="table-container">
@@ -75,35 +74,102 @@
             <form action="/generateReport" method="get">
                 <button type="submit">Generar Reporte</button>
             </form>
-
         </section>
+    </main>
 
+    <!-- El Modal para Agregar Estudiante -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Agregar Estudiante</h2>
+            <form id="addStudentForm">
+                <label for="codigoestudiante">Código Estudiante:</label>
+                <input type="text" id="codigoestudiante" name="codigoestudiante" required><br><br>
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" required><br><br>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required><br><br>
+                <label for="ape_paterno">Apellido Paterno:</label>
+                <input type="text" id="ape_paterno" name="ape_paterno" required><br><br>
+                <label for="ape_materno">Apellido Materno:</label>
+                <input type="text" id="ape_materno" name="ape_materno" required><br><br>
+                <label for="est_beca">Estado Beca:</label>
+                <select id="est_beca" name="est_beca" required>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select><br><br>
+                <label for="tip_beca">Tipo de Beca:</label>
+                <select id="tip_beca" name="tip_beca" required>
+                    <option value="Accesitario">Accesitario</option>
+                    <option value="Becado">Becado</option>
+                </select><br><br>
+                <label for="idCarrera">Carrera:</label>
+                <select id="idCarrera" name="idCarrera" required>
+                    <option value="1">Ingeniería de Software</option>
+                    <option value="2">Ingeniería Civil</option>
+                    <option value="3">Ingeniería Mecánica</option>
+                    <option value="4">Ingeniería Electrónica</option>
+                    <option value="5">Ingeniería Industrial</option>
+                    <option value="6">Ingeniería Química</option>
+                    <option value="7">Ingeniería Eléctrica</option>
+                    <option value="8">Ingeniería Ambiental</option>
+                    <option value="9">Ingeniería de Sistemas</option>
+                    <option value="10">Ingeniería Biomédica</option>
+                </select><br><br>
+                <button type="button" onclick="submitAddStudentForm()">Agregar</button>
+            </form>
+        </div>
+    </div>
 
     <script>
-
-        <% if (typeof alertMessage !== 'undefined') { %>
-            const alertMessage = '<%= alertMessage %>';
-            const alertType = '<%= alertType %>';
-            const redirect = '<%= redirect %>';
-            const redirectUrl = '<%= redirectUrl %>';
-            const redirectDelay = '<%= redirectDelay %>';
-
-            if (alertMessage) {
-                if (alertType === 'success') {
-                    alertify.success(alertMessage);
-                } else if (alertType === 'error') {
-                    alertify.error(alertMessage);
-                } else {
-                    alertify.message(alertMessage);
-                }
-
-                if (redirect) {
-                    setTimeout(() => {
-                        window.location.href = redirectUrl;
-                    }, redirectDelay);
-                }
+        function showAddDialog() {
+            document.getElementById('addModal').style.display = "block";
+        }
+    
+        function closeModal() {
+            document.getElementById('addModal').style.display = "none";
+        }
+    
+        function submitAddStudentForm() {
+            const form = document.getElementById('addStudentForm');
+            console.log(form);
+            const data = {
+                codigoestudiante: form.codigoestudiante.value,
+                dni: form.dni.value,
+                nombre: form.nombre.value,
+                ape_paterno: form.ape_paterno.value,
+                ape_materno: form.ape_materno.value,
+                est_beca: form.est_beca.value,
+                tip_beca: form.tip_beca.value,
+                idCarrera: form.idCarrera.value
+            };
+            
+            fetch('/addStudent', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+              .then(result => {
+                  if (result.success) {
+                      alertify.success('Estudiante agregado exitosamente');
+                      closeModal();
+                      location.reload();
+                  } else {
+                      alertify.error(result.message || 'Error al agregar estudiante');
+                  }
+              }).catch(error => {
+                  console.error('Error en la solicitud:', error);
+                  alertify.error('Error al agregar estudiante');
+              });
+        }
+    
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('addModal')) {
+                closeModal();
             }
-        <% } %>
+        }
     </script>
 </body>
 </html>

@@ -15,12 +15,17 @@ INSERT INTO `Administracion` (`idAdministracion`, `dep_responsable`, `cargo_dep`
 (5, 'Departamento 5', 'Cargo 5', 'Nombre5', 'Apellido1', 'Apellido2', '123456789012', 'correo5@example.com', 5);
 
 -- Insertar datos en la tabla Carrera
-INSERT INTO `Carrera` (`idCarrera`, `nombre`) VALUES
-(1, 'Carrera 1'),
-(2, 'Carrera 2'),
-(3, 'Carrera 3'),
-(4, 'Carrera 4'),
-(5, 'Carrera 5');
+INSERT INTO `Carrera` (`idCarrera`, `nom_carrera`) VALUES
+(1, 'Ingeniería de Software'),
+(2, 'Ingeniería Civil'),
+(3, 'Ingeniería Mecánica'),
+(4, 'Ingeniería Electrónica'),
+(5, 'Ingeniería Industrial'),
+(6, 'Ingeniería Química'),
+(7, 'Ingeniería Eléctrica'),
+(8, 'Ingeniería Ambiental'),
+(9, 'Ingeniería de Sistemas'),
+(10, 'Ingeniería Biomédica');
 
 -- Insertar datos en la tabla Estudiante
 INSERT INTO `Estudiante` (`codigoestudiante`, `dni`, `nombre`, `ape_paterno`, `ape_materno`, `est_beca`, `tip_beca`, `idAdministracion`, `idCarrera`, `idusers`) VALUES

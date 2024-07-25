@@ -20,6 +20,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/adm', adminController.showListAdm);
+router.post('/addStudent', adminController.addStudent);
+router.get('/modifyStudent', adminController.modifyStudent);
+router.get('/deleteStudent', adminController.deleteStudent);
 router.post('/searchListAdm', adminController.searchListAdm);
 //router.get('/generateReport', adminController.generateReportAdm);
 
