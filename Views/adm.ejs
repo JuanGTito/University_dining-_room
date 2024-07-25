@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/adm.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/alertify.js/1.13.1/css/alertify.min.css" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
     <title>Administración</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
@@ -19,9 +18,9 @@
         </div>
         <div class="right-info">
             <% if (login) { %>
-                <a href="logout" class="a-logout">Salir</a>
+                <a href="logout" class="btn a-logout">Salir</a>
             <% } else { %>
-                <a href="login" class="a-login">Iniciar Sesión</a>
+                <a href="login" class="btn a-login">Iniciar Sesión</a>
             <% } %>
         </div>
     </header>
@@ -31,13 +30,13 @@
                 <p>Administrador</p>
                 <form id="searchForm" action="/searchListAdm" method="post">
                     <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI" required>
-                    <button type="submit">BUSCAR</button>
+                    <button class="btn pulse-effect" type="submit">BUSCAR</button>
                 </form>
             </div>
             <div class="crud-info">
-                <button type="button" onclick="showAddDialog()">Agregar</button>
-                <button type="button" onclick="showModifyDialog()">Modificar</button>
-                <button type="button" onclick="showDeleteDialog()">Eliminar</button>
+                <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
+                <button class="btn pulse-effect" type="button" onclick="prepareEdit()">Modificar</button>
+                <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
             </div>
             <div class="info-list">
                 <div class="table-container">
@@ -69,10 +68,15 @@
             </div>
         </section>
         <section class="info-start">
-            <h2>48 / 120</h2>
-            <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
+            <button class="btn pulse-effect">Menu</button>
+            <button class="btn pulse-effect">Asistencia Fecha</button>
+            <button class="btn pulse-effect">Importar Relacion</button>
+            <button class="btn pulse-effect">Concesionaria</button>
+            <button class="btn pulse-effect">Inventario Productos</button>
+            <button class="btn pulse-effect">Reporte Quejas</button>
+            <button class="btn pulse-effect">Exportar Relacion</button> 
             <form action="/generateReport" method="get">
-                <button type="submit">Generar Reporte</button>
+                <button class="btn pulse-effect" type="submit">Generar Reporte</button>
             </form>
         </section>
     </main>
@@ -121,7 +125,124 @@
         </div>
     </div>
 
+    <div id="modifyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Modificar Estudiante</h2>
+            <form id="modifyStudentForm">
+                <input type="hidden" id="modifyCodigoEstudiante" name="codigoestudiante">
+                <label for="modifyDni">DNI:</label>
+                <input type="text" id="modifyDni" name="dni" required><br><br>
+                <label for="modifyNombre">Nombre:</label>
+                <input type="text" id="modifyNombre" name="nombre" required><br><br>
+                <label for="modifyApePaterno">Apellido Paterno:</label>
+                <input type="text" id="modifyApePaterno" name="ape_paterno" required><br><br>
+                <label for="modifyApeMaterno">Apellido Materno:</label>
+                <input type="text" id="modifyApeMaterno" name="ape_materno" required><br><br>
+                <label for="modifyEstBeca">Estado Beca:</label>
+                <select id="modifyEstBeca" name="est_beca" required>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select><br><br>
+                <label for="modifyTipBeca">Tipo de Beca:</label>
+                <select id="modifyTipBeca" name="tip_beca" required>
+                    <option value="Accesitario">Accesitario</option>
+                    <option value="Becado">Becado</option>
+                </select><br><br>
+                <label for="modifyIdCarrera">Carrera:</label>
+                <select id="modifyIdCarrera" name="idCarrera" required>
+                    <option value="1">Ingeniería de Software</option>
+                    <option value="2">Ingeniería Civil</option>
+                    <option value="3">Ingeniería Mecánica</option>
+                    <option value="4">Ingeniería Electrónica</option>
+                    <option value="5">Ingeniería Industrial</option>
+                    <option value="6">Ingeniería Química</option>
+                    <option value="7">Ingeniería Eléctrica</option>
+                    <option value="8">Ingeniería Ambiental</option>
+                    <option value="9">Ingeniería de Sistemas</option>
+                    <option value="10">Ingeniería Biomédica</option>
+                </select><br><br>
+                <button type="button" onclick="submitModifyStudentForm()">Modificar</button>
+            </form>
+        </div>
+    </div>
+
     <script>
+
+        function prepareEdit() {
+            // Encuentra el radio button seleccionado
+            const selectedRadio = document.querySelector('input[name="selectedStudent"]:checked');
+
+            if (!selectedRadio) {
+                alertify.error('Por favor, seleccione un estudiante.');
+                return;
+            }
+        
+            const codigoestudiante = selectedRadio.value;
+        
+            // Solicita los datos del estudiante al servidor
+            fetch(`/getStudent/${codigoestudiante}`)
+                .then(response => response.json())
+                .then(student => {
+                    // Llena el modal con los datos del estudiante
+                    document.getElementById('modifyCodigoEstudiante').value = student.codigoestudiante;
+                    document.getElementById('modifyDni').value = student.dni;
+                    document.getElementById('modifyNombre').value = student.nombre;
+                    document.getElementById('modifyApePaterno').value = student.ape_paterno;
+                    document.getElementById('modifyApeMaterno').value = student.ape_materno;
+                    document.getElementById('modifyEstBeca').value = student.est_beca;
+                    document.getElementById('modifyTipBeca').value = student.tip_beca;
+                    document.getElementById('modifyIdCarrera').value = student.idCarrera;
+                
+                    // Muestra el modal
+                    document.getElementById('modifyModal').style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos del estudiante:', error);
+                    alertify.error('Error al obtener los datos del estudiante');
+                });
+        }
+
+        function submitModifyStudentForm() {
+            const form = document.getElementById('modifyStudentForm');
+            const data = {
+                codigoestudiante: form.codigoestudiante.value,
+                dni: form.dni.value,
+                nombre: form.nombre.value,
+                ape_paterno: form.ape_paterno.value,
+                ape_materno: form.ape_materno.value,
+                est_beca: form.est_beca.value,
+                tip_beca: form.tip_beca.value,
+                idCarrera: form.idCarrera.value
+            };
+        
+            fetch('/editStudent', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alertify.success('Estudiante modificado exitosamente');
+                    closeModifyModal();
+                    location.reload();
+                } else {
+                    alertify.error(result.message || 'Error al modificar estudiante');
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+                alertify.error('Error al modificar estudiante');
+            });
+        }
+
+        function closeModifyModal() {
+            document.getElementById('modifyModal').style.display = "none";
+        }
+
         function showAddDialog() {
             document.getElementById('addModal').style.display = "block";
         }
@@ -164,10 +285,51 @@
                   alertify.error('Error al agregar estudiante');
               });
         }
-    
+
+        function confirmDelete() {
+    // Obtener el radio seleccionado
+    const selectedRadio = document.querySelector('input[name="selectedStudent"]:checked');
+
+    if (!selectedRadio) {
+        alertify.error('Por favor, selecciona un estudiante');
+        return;
+    }
+
+    const codigoestudiante = selectedRadio.value;
+
+    // Confirmar la eliminación
+    alertify.confirm('Confirmar Eliminación', '¿Estás seguro de que deseas eliminar este estudiante?',
+        function() {
+            // Confirmado, enviar la solicitud de eliminación
+            fetch(`/deleteStudent/${codigoestudiante}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alertify.success('Estudiante eliminado exitosamente');
+                    location.reload();
+                } else {
+                    alertify.error(result.message || 'Error al eliminar estudiante');
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+                alertify.error('Error al eliminar estudiante');
+            });
+        },
+        function() {
+            // Cancelado
+            alertify.error('Eliminación cancelada');
+        }
+    );
+}
+
         window.onclick = function(event) {
             if (event.target == document.getElementById('addModal')) {
                 closeModal();
+            } else if (event.target == document.getElementById('modifyModal')) {
+                closeModifyModal();
             }
         }
     </script>

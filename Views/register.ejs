@@ -73,7 +73,7 @@
         </section>
         <section class="info-start">
             <h1 id="mealTitle">DESAYUNO</h1>
-            <h2>48 / 120</h2>
+            <h2><%= total - registered %> / <%= total %></h2>
             <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
             <form action="/generateReport" method="get">
                 <button type="submit">Generar Reporte</button>

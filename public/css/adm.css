@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton+SC&family=Outfit:wght@100..900&display=swap');
 
 body{
+    font-family: 'Outfit';
     margin: 0;
     padding: 0;
+    background-color: #EEEEEE;
 }
 header {
-    background-color: #2d4268;
+    background-color: #134B70;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -24,14 +26,18 @@ header {
     display: flex;
     align-items: center;
 }
-.right-info a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 16px;
-    background-color: #333;
-    border-radius: 4px;
-    margin-left: 20px;
+.btn {
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    cursor: pointer;
+    text-decoration: none; 
+    border-radius: 5px; 
+    display: inline-flex;
+    font-weight: 700;
 }
+.a-logout {background-color: #EEEEEE; color: black;} 
+.a-logout:hover {background: #cfcfcf;}
 
 main{
     display: flex;
@@ -39,7 +45,7 @@ main{
     font-family: "Outfit", sans-serif;
 }
 .input-search{
-    background-color: aliceblue;
+    background-color: rgb(255, 255, 255);
     margin-right: 10px;
     height: 90vh;
     width: 70%;
@@ -58,8 +64,10 @@ main{
 .search-info p{
     font-size: 20px;
     font-weight: 700;
+    margin: 20px;
 }
 .search-info  form input{
+    background-color: #EEEEEE;
     font-size: 20px;
     font-weight: 700;
     border-radius: 15px;
@@ -67,18 +75,31 @@ main{
     padding: 0.5rem;
     margin: 1rem;
 }
-.search-info form button{
-    font-size: 20px;
-    font-weight: 700;
-    border-radius: 15px;
-    padding: 0.5rem 5%;
-    background-color: aqua;
+
+.pulse-effect {
     border: none;
+    color: white;
+    padding: 14px 28px;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: #134B70; /* Color base del botón */
+    transition: transform 0.3s ease-in-out; /* Transición suave del efecto de pulsación */
+}
+
+.pulse-effect:hover {
+    background-color: #0c2f46; /* Cambia el color al pasar el cursor sobre el botón */
+}
+
+.pulse-effect:active {
+    transform: scale(0.9); /* Reduce ligeramente el tamaño del botón cuando se hace clic */
 }
 
 .crud-info{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+}
+.crud-info .btn{
+    margin: 10px;
 }
 
 .table-container {
@@ -105,32 +126,16 @@ table th {
     text-align: center;
 }
 
-.button-register{
-    text-align: right;
-    padding: 0.5rem 5%;
-    
-}
-.button-register button{
-    font-size: 20px;
-    font-weight: 400px;
-    border-radius: 15px;
-    padding: 0.5rem 5%;
-    background-color: #333;
-    color: white;
-    border: none;
-    text-align: center;
-}
-
 .info-start{
-    background-color: aliceblue;
+    background-color: rgb(255, 255, 255);
     height: 90vh;
     width: 30%;
 }
 .info-start{
-    padding-top: 2%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-evenly
 }
 
 .info-start h1{
@@ -163,17 +168,8 @@ table th {
     margin: 1rem 3rem;
     text-align: center;
 }
-
 .info-start button{
     font-size: 20px;
-    font-weight: 400px;
-    border-radius: 15px;
-    padding: 0.5rem 5%;
-    background-color: #333;
-    color: white;
-    border: none;
-    margin: 1rem 3rem;
-    text-align: center;
 }
 
 .modal {

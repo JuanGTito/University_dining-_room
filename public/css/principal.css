@@ -26,17 +26,22 @@ body{
     display: flex;
     align-items: center;
 }
-.right-info button {
-    color: white;
-    padding: 8px 15px;
-    background-color: #333;
-    border-radius: 8px;
-    text-align: center;
-    border: none;
-    margin: 10px;
+
+.btn {
+    border: none; 
+    color: black; 
+    padding: 10px 20px; 
+    cursor: pointer;
+    border-radius: 5px; 
+    display: inline-flex;
+    font-weight: 700;
+    margin-right: 5px;
 }
+.primary {background-color: #e7e7e7; color: black;} 
+.primary:hover {background: #cfcfcf;}
+
 .right-info button a {
-    color: white;
+    color: black;
     text-decoration: none;
 }
 .img-2{
