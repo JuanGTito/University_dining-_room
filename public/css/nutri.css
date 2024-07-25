@@ -9,14 +9,18 @@ body {
 }
 
 header {
-    background-color: #002366;
+    background-color: #3c6dc7;
     color: white;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
+.left-info {
+    display: flex;
+    flex-direction: row;
+    padding-left: 6px;
+}
 .header-content p {
     margin: 0;
 }
@@ -80,7 +84,18 @@ main {
     justify-content: center;
     gap: 20px;
 }
-
+.btn {
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    cursor: pointer;
+    text-decoration: none; 
+    border-radius: 5px; 
+    display: inline-flex;
+    font-weight: 700;
+}
+.a-logout {background-color: #EEEEEE; color: black;} 
+.a-logout:hover {background: #cfcfcf;}
 .btn-menu, .btn-exportar {
     background-color: #00bcd4;
     color: white;
@@ -88,4 +103,58 @@ main {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+#inventario table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#inventario th, #inventario td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#inventario th {
+    background-color: #f2f2f2;
+}
+
+/* Estilos para el botón */
+.btn-inventario {
+    background-color: #00bcd4; /* Color de fondo verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+.btn-inventario:hover {
+    background-color: #ccd5e0; /* Color más oscuro al pasar el mouse */
+}
+
+#inventario table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#inventario th, #inventario td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#inventario th {
+    background-color: #f2f2f2;
+}
+
+#agregarProductoForm {
+    margin-top: 20px;
+}
+
+#agregarProductoForm input,
+#agregarProductoForm button {
+    margin-bottom: 10px;
 }

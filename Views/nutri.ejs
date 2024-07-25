@@ -8,22 +8,118 @@
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <p>Av. Nueva Zelandia N° 631 - Juliaca</p>
-            <p><a href="mailto:info@unaj.edu.pe">info@unaj.edu.pe</a></p>
+        <div class="left-info">
+            <div class="direccion">Av. Nueva Zelandia N° 631 - Juliaca</div>
+            <div class="telefono">+123 456 789</div>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#">Portal de Transparencia</a></li>
-                <li><a href="#">Intranet</a></li>
-                <li><a href="#">Español</a></li>
-            </ul>
-        </nav>
+        <div class="right-info">
+            <% if (login) { %>
+                <a href="logout" class="btn a-logout">Salir</a>
+            <% } else { %>
+                <a href="login" class="btn a-login">Iniciar Sesión</a>
+            <% } %>
+        </div>
     </header>
     <main>
         <section class="nutricionista">
             <h1>Nutricionista</h1>
-            <button class="btn-inventario">Inventario de Productos</button>
+
+            <button class="btn-inventario" onclick="toggleInventario()">Inventario de Productos</button>
+            <div id="inventario" style="display: none;"></div>
+
+            <h2>Agregar Producto</h2>
+            <form id="agregarProductoForm">
+                <input type="number" id="idInventario" placeholder="ID" required>
+                <input type="text" id="nombre" placeholder="Nombre" required>
+                <input type="number" id="cant_disponible" placeholder="Cantidad" required>
+                <input type="date" id="fecha_caducidad" required>
+                <button type="submit">Agregar Producto</button>
+            </form>
+
+            <script>
+                let tablaVisible = false;
+
+                async function fetchInventario() {
+                    const response = await fetch('/inventario');
+                    const inventario = await response.json();
+                    const inventarioDiv = document.getElementById('inventario');
+
+                    // Crear tabla
+                    let tablaHTML = `
+                        <h2>Inventario de Productos</h2>
+                        <table> <tr>
+                                <th></th> 
+                                <th>ID</th>
+                                <th>NOMBRE</th>
+                                <th>CANTIDAD</th>
+                                <th>FECHA CADUCIDAD</th>
+                            </tr>
+                    `;
+
+                    inventario.forEach(item => {
+                        tablaHTML += `
+                            <tr>
+                                <td><input type="radio" name="estudiante"></td>
+                                <td>${item.idInventario || "-"}</td> 
+                                <td>${item.nombre || "-"}</td>
+                                <td>${item.cant_disponible || "-"}</td>
+                                <td>${item.fecha_caducidad || "-"}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tablaHTML += '</table>';
+
+                    inventarioDiv.innerHTML = tablaHTML;
+                }
+
+                function toggleInventario() {
+                    const inventarioDiv = document.getElementById('inventario');
+
+                    if (tablaVisible) {
+                        inventarioDiv.style.display = 'none';
+                    } else {
+                        fetchInventario();
+                        inventarioDiv.style.display = 'block'; 
+                    }
+                    tablaVisible = !tablaVisible; 
+                }
+
+                const agregarProductoForm = document.getElementById('agregarProductoForm');
+
+                agregarProductoForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const nuevoProducto = {
+                        idInventario: document.getElementById('idInventario').value,
+                        nombre: document.getElementById('nombre').value,
+                        cant_disponible: document.getElementById('cant_disponible').value,
+                        fecha_caducidad: document.getElementById('fecha_caducidad').value
+                    };
+
+                    try {
+                        const response = await fetch('/agregar_producto', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(nuevoProducto)
+                        });
+
+                        if (response.ok) {
+                            alert('Producto agregado con éxito');
+                            toggleInventario(); // Actualizar y mostrar la tabla
+                            agregarProductoForm.reset(); // Limpiar el formulario
+                        } else {
+                            alert('Error al agregar el producto');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error al agregar el producto');
+                    }
+                });
+            </script>
+
             <div class="sections">
                 <div class="section">
                     <img src="../assets/img/font-img/imgf-1.png" alt="">
