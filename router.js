@@ -21,9 +21,6 @@ router.get('/', (req, res) => {
 
 router.get('/adm', adminController.showListAdm);
 router.post('/searchListAdm', adminController.searchListAdm);
-router.post('/addStudent', adminController.addStudent);
-router.post('/updateStudent', adminController.updateStudent);
-router.post('/deleteStudent', adminController.deleteStudent);
 //router.get('/generateReport', adminController.generateReportAdm);
 
 router.get('/nutri', (req, res) => {

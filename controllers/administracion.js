@@ -1,60 +1,89 @@
-const conexion = require('../conection/conexion');
+const ExcelJS = require('exceljs');
+const connection = require('../conection/conexion');
+const baseQuery = `
+    SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera 
+    FROM estudiante 
+    JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
+`;
 
-// Mostrar lista de estudiantes
+// Función para obtener todos los estudiantes
 function showListAdm(req, res) {
-    const query = 'SELECT * FROM estudiantes';
-    conexion.query(query, (err, results) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.render('adm', { results, login: req.session.loggedin, name: req.session.name });
+
+    connection.query(baseQuery, (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).send('Error en la consulta');
         }
+        res.render('adm', { 
+            results: results, 
+            login: req.session.loggedin || false, 
+            name: req.session.name || ''
+        });
     });
 }
 
-// Agregar estudiante
-function addStudent(req, res) {
-    const { dni, nombre, est_beca, idcarrera } = req.body;
-    const query = 'INSERT INTO estudiantes (dni, nombre, est_beca, idcarrera) VALUES (?, ?, ?, ?)';
-    conexion.query(query, [dni, nombre, est_beca, idcarrera], (err, results) => {
-        if (err) {
-            res.status(500).send(err);
+function searchListAdm(req, res) {
+    const searchTerm = req.body.searchTerm.trim();
+    const login = req.session.loggedin || false;
+
+    if (searchTerm) {
+        let query = baseQuery;
+        let queryParams = [];
+        let alertMessage = '';
+        let alertType = 'message';
+        let redirect = false;
+        let redirectUrl = '';
+        let redirectDelay = 0;
+
+        if (!isNaN(searchTerm)) {
+            query += ' WHERE codigoestudiante = ? OR dni = ?';
+            queryParams = [searchTerm, searchTerm];
         } else {
-            res.redirect('/adm');
+            alertMessage = 'El campo Código/DNI debe ser numérico.';
+            alertType = 'error';
+            redirect = true;
+            redirectUrl = '/adm';
+            redirectDelay = 2000;
         }
-    });
+
+        connection.query(query, queryParams, (error, results) => {
+            if (error) {
+
+                alertMessage = 'Error en la consulta';
+                alertType = 'error';
+                redirect = true;
+                redirectUrl = '/adm';
+                redirectDelay = 2000;
+            }
+            console.log(error)
+            res.render('adm', {
+                results: results,
+                login: login,
+                name: req.session.name || '',
+                alertMessage: alertMessage || 'Encontrado',
+                alertType: alertType || 'success',
+                redirect: false,
+                redirectUrl: redirectUrl,
+                redirectDelay: 20000
+            });
+        });
+    } else {
+        res.render('adm', {
+            results: [],
+            login: login,
+            name: req.session.name || '',
+            alertMessage: 'El campo Código/DNI no puede estar vacío.',
+            alertType: 'error',
+            redirect: true,
+            redirectUrl: '/adm',
+            redirectDelay: 2000
+        });
+    }
 }
 
-// Modificar estudiante
-function updateStudent(req, res) {
-    const { codigoestudiante, dni, nombre, est_beca, idcarrera } = req.body;
-    const query = 'UPDATE estudiantes SET dni = ?, nombre = ?, est_beca = ?, idcarrera = ? WHERE codigoestudiante = ?';
-    conexion.query(query, [dni, nombre, est_beca, idcarrera, codigoestudiante], (err, results) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.redirect('/adm');
-        }
-    });
-}
 
-// Eliminar estudiante
-function deleteStudent(req, res) {
-    const { selectedStudent } = req.body;
-    const query = 'DELETE FROM estudiantes WHERE codigoestudiante = ?';
-    conexion.query(query, [selectedStudent], (err, results) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.redirect('/adm');
-        }
-    });
-}
 
 module.exports = {
     showListAdm: showListAdm,
-    addStudent: addStudent,
-    updateStudent: updateStudent,
-    deleteStudent: deleteStudent
+    searchListAdm: searchListAdm
 };
-
