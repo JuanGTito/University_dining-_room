@@ -1,4 +1,5 @@
 const ExcelJS = require('exceljs');
+const PDFDocument = require('pdfkit');
 const connection = require('../conection/conexion');
 const baseQuery = `
     SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera 
@@ -28,43 +29,41 @@ function searchList(req, res) {
     const login = req.session.loggedin || false;
 
     if (searchTerm) {
-        let query = baseQuery;
-        let queryParams = [];
-        let alertMessage = '';
-        let alertType = 'message';
-        let redirect = false;
-        let redirectUrl = '';
-        let redirectDelay = 0;
-
-        if (!isNaN(searchTerm)) {
-            query += ' WHERE codigoestudiante = ? OR dni = ?';
-            queryParams = [searchTerm, searchTerm];
-        } else {
-            alertMessage = 'El campo Código/DNI debe ser numérico.';
-            alertType = 'error';
-            redirect = true;
-            redirectUrl = '/register';
-            redirectDelay = 2000;
-        }
+        let query = `
+            SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera
+            FROM estudiante
+            JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
+            WHERE estudiante.codigoestudiante LIKE ? OR estudiante.dni LIKE ? OR estudiante.nombre LIKE ?
+        `;
+        const queryParams = [
+            `%${searchTerm}%`,
+            `%${searchTerm}%`,
+            `%${searchTerm}%`
+        ];
 
         connection.query(query, queryParams, (error, results) => {
             if (error) {
-
-                alertMessage = 'Error en la consulta';
-                alertType = 'error';
-                redirect = true;
-                redirectUrl = '/register';
-                redirectDelay = 2000;
+                console.error('Error en la consulta:', error);
+                return res.status(500).render('register', {
+                    results: [],
+                    login: login,
+                    name: req.session.name || '',
+                    alertMessage: 'Error en la consulta',
+                    alertType: 'error',
+                    redirect: true,
+                    redirectUrl: '/register',
+                    redirectDelay: 2000
+                });
             }
-            console.log(error)
+
             res.render('register', {
                 results: results,
                 login: login,
                 name: req.session.name || '',
-                alertMessage: alertMessage || 'Encontrado',
-                alertType: alertType || 'success',
+                alertMessage: results.length ? 'Resultados encontrados' : 'No se encontraron resultados',
+                alertType: results.length ? 'success' : 'warning',
                 redirect: false,
-                redirectUrl: redirectUrl,
+                redirectUrl: '/register',
                 redirectDelay: 20000
             });
         });
@@ -134,7 +133,7 @@ function registerAttendance(req, res) {
                 name: req.session.name || '',
                 alertMessage: 'Ya has registrado asistencia recientemente. Regresa dentro de 3 horas.',
                 alertType: 'warning',
-                redirect: true,
+                redirect: false,
                 redirectUrl: '/register',
                 redirectDelay: 4000
             });
@@ -166,9 +165,9 @@ function registerAttendance(req, res) {
                 name: req.session.name || '',
                 alertMessage: 'Asistencia registrada correctamente.',
                 alertType: 'success',
-                redirect: true,
+                redirect: false,
                 redirectUrl: '/register',
-                redirectDelay: 4000
+                redirectDelay: 3000
             });
         });
     });
@@ -181,7 +180,7 @@ function autoRegister(req, res) {
 
     if (!codigo) {
         return res.render('register', {
-            results: [], // Asegura que se pase results aunque esté vacío
+            results: results, // Asegura que se pase results aunque esté vacío
             login: req.session.loggedin || false,
             name: req.session.name || '',
             alertMessage: 'Código de estudiante no proporcionado.',
@@ -301,7 +300,7 @@ function autoRegister(req, res) {
 
 /// PARTE START
 
-async function generateReport(req, res) {
+async function generateExcelReport(req, res) {
     const today = new Date().toISOString().slice(0, 10); // Fecha de hoy en formato YYYY-MM-DD
     const sql = `
         SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera
@@ -359,6 +358,152 @@ async function generateReport(req, res) {
     }
 }
 
+async function generatePDFReport(req, res) {
+    const today = new Date().toISOString().slice(0, 10); // Fecha de hoy en formato YYYY-MM-DD
+    const sql = `
+        SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera
+        FROM asistencia
+        JOIN estudiante ON asistencia.codigoestudiante1 = estudiante.codigoestudiante
+        JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
+        WHERE DATE(fecha_hora) = CURDATE()`;
+
+    try {
+        const results = await new Promise((resolve, reject) => {
+            connection.query(sql, (error, results) => {
+                if (error) return reject(error);
+                resolve(results);
+            });
+        });
+
+        // Crear un nuevo documento PDF
+        const doc = new PDFDocument();
+        const fileName = `Asistencia_${today}.pdf`;
+
+        // Establecer los encabezados
+        res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+        res.setHeader('Content-Type', 'application/pdf');
+
+        doc.pipe(res);
+
+        // Añadir contenido al PDF
+        doc.fontSize(16).text('Reporte de Asistencia', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(12);
+
+        results.forEach(row => {
+            doc.text(`Código: ${row.codigoestudiante}`);
+            doc.text(`DNI: ${row.dni}`);
+            doc.text(`Nombre: ${row.nombre}`);
+            doc.text(`Beca: ${row.est_beca}`);
+            doc.text(`Carrera: ${row.nom_carrera}`);
+            doc.text(`Fecha: ${today}`);
+            doc.moveDown();
+        });
+
+        doc.end();
+    } catch (error) {
+        console.error('Error al generar el reporte:', error);
+        res.status(500).send('Error al generar el reporte');
+    }
+}
+
+async function printReport(req, res) {
+    const today = new Date().toISOString().slice(0, 10);
+    const sql = `
+        SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera
+        FROM asistencia
+        JOIN estudiante ON asistencia.codigoestudiante1 = estudiante.codigoestudiante
+        JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
+        WHERE DATE(fecha_hora) = CURDATE()`;
+
+    try {
+        const results = await new Promise((resolve, reject) => {
+            connection.query(sql, (error, results) => {
+                if (error) return reject(error);
+                resolve(results);
+            });
+        });
+
+        let html = `
+            <html>
+            <head>
+                <title>Reporte de Asistencia</title>
+                <style>
+                    @media print {
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .no-print { display: none; }
+                    }
+                    @media screen {
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .no-print { display: block; }
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Reporte de Asistencia</h1>
+                <button class="no-print" onclick="window.print()">Imprimir Reporte</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Beca</th>
+                            <th>Carrera</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        results.forEach(row => {
+            html += `
+                <tr>
+                    <td>${row.codigoestudiante}</td>
+                    <td>${row.dni}</td>
+                    <td>${row.nombre}</td>
+                    <td>${row.est_beca}</td>
+                    <td>${row.nom_carrera}</td>
+                    <td>${today}</td>
+                </tr>`;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </body>
+            </html>`;
+
+        // Enviar HTML al navegador en una nueva ventana
+        res.send(`
+            <html>
+            <head>
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() {
+                            window.location.href = document.referrer || '/';
+                        };
+                    };
+                </script>
+            </head>
+            <body>
+                ${html}
+            </body>
+            </html>
+        `);
+    } catch (error) {
+        console.error('Error al generar el reporte:', error);
+        res.status(500).send('Error al generar el reporte');
+    }
+}
+
+
 function getTotalStudents(req, res) {
     const sql = 'SELECT COUNT(*) AS total FROM estudiante';
     connection.query(sql, (error, results) => {
@@ -386,7 +531,9 @@ module.exports = {
     searchList: searchList,
     registerAttendance: registerAttendance,
     autoRegister: autoRegister,
-    generateReport: generateReport,
+    generateExcelReport: generateExcelReport,
+    generatePDFReport: generatePDFReport,
+    printReport: printReport,
     getTotalStudents: getTotalStudents,
     getRegisteredStudentsCount: getRegisteredStudentsCount
 };

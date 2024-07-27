@@ -46,9 +46,10 @@ router.get('/register', supervisarController.showList);
 router.post('/searchList', supervisarController.searchList);
 router.post('/register', supervisarController.registerAttendance);
 router.post('/autoRegister', supervisarController.autoRegister);
-router.get('/generateReport', supervisarController.generateReport);
-router.get('/getTotalStudents', supervisarController.getTotalStudents);
-router.get('/getRegisteredStudentsCount', supervisarController.getRegisteredStudentsCount);
+// Rutas para cada tipo de reporte
+router.get('/generateExcelReport', supervisarController.generateExcelReport);
+router.get('/generatePDFReport', supervisarController.generatePDFReport);
+router.get('/printReport', supervisarController.printReport);
 // Supervisor Routes
 router.get('/getTotalStudents', supervisarController.getTotalStudents);
 router.get('/getRegisteredStudentsCount', supervisarController.getRegisteredStudentsCount);

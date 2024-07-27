@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <!-- CSS de DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <title>Register</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
@@ -28,12 +34,11 @@
         <section class="input-search">
             <div class="search-info">
                 <p>Supervisor</p>
-                <form id="searchForm" action="/searchList" method="post">
-                    <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI">
+                <form id="searchForm">
+                    <input type="text" id="searchInput" placeholder="Buscar estudiante...">
                     <button type="button" id="scanButton">ESCANEAR</button>
-                    <button type="submit">BUSCAR</button>
                 </form>
-                <form id="autoRegisterForm" action="/autoRegister" method="post" style="display:none;">
+                <form id="autoRegisterForm" action="/autoRegister" method="POST" style="display:none;">
                     <input type="hidden" name="codigo" id="autoCodigo">
                 </form>
             </div>
@@ -41,7 +46,7 @@
             <div class="info-list">
                 <form action="/register" method="post">
                     <div class="table-container">
-                        <table>
+                        <table id="resultsTable" class="display">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -76,8 +81,10 @@
             <h1 id="mealTitle">DESAYUNO</h1>
             <h2 id="countDisplay">0 / 0</h2>
             <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
-            <form action="/generateReport" method="get">
-                <button type="submit">Generar Reporte</button>
+            <form>
+                <button type="button" onclick="window.location.href='/printReport'">Imprimir Reporte</button>
+                <button type="button" onclick="window.location.href='/generatePDFReport'">Descargar PDF</button>
+                <button type="button" onclick="window.location.href='/generateExcelReport'">Descargar Excel</button>
             </form>
             <br>
             <button id="toggleRegisterBtn">INICIAR REGISTRO</button>
@@ -129,6 +136,54 @@
             }
         });
     </script>
+    <!-- Inicializar DataTables -->
+     <!-- Inicializar DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#resultsTable').DataTable(); // Inicializar DataTables en la tabla
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+    // Inicializar DataTables
+    let dataTable = $('#resultsTable').DataTable();
+
+    // Manejo de la entrada del campo de búsqueda
+    $('#searchInput').on('input', function() {
+        const searchTerm = $(this).val();
+
+        // Realizar la solicitud al servidor con el término de búsqueda
+        fetch('/searchList', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ searchTerm: searchTerm })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Limpiar la tabla
+            dataTable.clear();
+
+            // Llenar la tabla con los nuevos datos
+            data.results.forEach(row => {
+                dataTable.row.add([
+                    `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
+                    row.codigoestudiante,
+                    row.dni,
+                    row.nombre,
+                    row.est_beca,
+                    row.nom_carrera
+                ]).draw();
+            });
+        })
+        .catch(error => console.error('Error al buscar:', error));
+    });
+});
+
+    </script>
     
     <script>
         async function updateStudentCounts() {
@@ -156,10 +211,11 @@
         <% if (typeof alertMessage !== 'undefined') { %>
             const alertMessage = '<%= alertMessage %>';
             const alertType = '<%= alertType %>';
-            const redirect = '<%= redirect %>';
+            const redirect = <%= JSON.stringify(redirect) %>;
             const redirectUrl = '<%= redirectUrl %>';
-            const redirectDelay = '<%= redirectDelay %>';
-
+            const redirectDelay = <%= redirectDelay %>;
+    
+            // Mostrar el mensaje de alerta
             if (alertMessage) {
                 if (alertType === 'success') {
                     alertify.success(alertMessage);
@@ -168,7 +224,7 @@
                 } else {
                     alertify.message(alertMessage);
                 }
-
+    
                 if (redirect) {
                     setTimeout(() => {
                         window.location.href = redirectUrl;
@@ -177,7 +233,7 @@
             }
         <% } %>
     </script>
-
+    
     <div id="reader" style="width: 100%; height: 300px;"></div>
 </body>
 </html>
