@@ -41,7 +41,7 @@ header {
 
 main{
     display: flex;
-    padding: 20px;
+    padding: 15px;
     font-family: "Outfit", sans-serif;
 }
 .input-search{
@@ -54,6 +54,7 @@ main{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    margin: auto 20px;
 }
 .search-info form{
     display: flex;
@@ -68,18 +69,18 @@ main{
 }
 .search-info  form input{
     background-color: #EEEEEE;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 700;
     border-radius: 15px;
     border: none;
     padding: 0.5rem;
-    margin: 1rem;
+    margin: 0.5rem;
 }
 
 .pulse-effect {
     border: none;
     color: white;
-    padding: 14px 28px;
+    padding: 14px 20px;
     cursor: pointer;
     border-radius: 10px;
     background-color: #134B70; /* Color base del botón */
@@ -99,7 +100,7 @@ main{
     justify-content: center;
 }
 .crud-info .btn{
-    margin: 10px;
+    margin: 0.5rem;
 }
 
 .table-container {
@@ -124,6 +125,11 @@ table th {
 .info-list table{
     width: 100%;
     text-align: center;
+}
+.check{
+    width: 20px; /* Tamaño del radio button */
+    height: 20px; /* Tamaño del radio button */
+    cursor: pointer;
 }
 
 .info-start{

@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/themes/default.min.css"/>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+    <!-- CSS de DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <title>Administración</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
@@ -29,18 +35,18 @@
             <div class="search-info">
                 <p>Administrador</p>
                 <form id="searchForm" action="/searchListAdm" method="post">
-                    <input type="text" name="searchTerm" id="searchTerm" placeholder="Código/DNI" required>
-                    <button class="btn pulse-effect" type="submit">BUSCAR</button>
+                    <input type="text" id="searchInput" placeholder="Buscar estudiante...">
                 </form>
+                <div class="crud-info">
+                    <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
+                    <button class="btn pulse-effect" type="button" onclick="prepareEdit()">Modificar</button>
+                    <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
+                </div>
             </div>
-            <div class="crud-info">
-                <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
-                <button class="btn pulse-effect" type="button" onclick="prepareEdit()">Modificar</button>
-                <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
-            </div>
+            
             <div class="info-list">
                 <div class="table-container">
-                    <table>
+                    <table id="resultsTable" class="display">
                         <thead>
                             <tr>
                                 <th></th>
@@ -54,7 +60,7 @@
                         <tbody>
                             <% results.forEach((user) => { %>
                                 <tr>
-                                    <td class="check"><input type="radio" name="selectedStudent" value="<%= user.codigoestudiante %>"></td>
+                                    <td><input class="check" type="radio" name="selectedStudent" value="<%= user.codigoestudiante %>"></td>
                                     <td><%= user.codigoestudiante %></td>
                                     <td><%= user.dni %></td>
                                     <td><%= user.nombre %></td>
@@ -68,7 +74,7 @@
             </div>
         </section>
         <section class="info-start">
-            <button class="btn pulse-effect">Menu</button>
+            <button class="btn pulse-effect">Visualizar Menu</button>
             <button class="btn pulse-effect">Asistencia Fecha</button>
             <button class="btn pulse-effect">Importar Relacion</button>
             <button class="btn pulse-effect">Concesionaria</button>
@@ -124,7 +130,7 @@
             </form>
         </div>
     </div>
-
+    <!-- El Modal para Modificar Estudiante -->
     <div id="modifyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -167,8 +173,8 @@
         </div>
     </div>
 
+    <!-- Funciones dentro del html oejs-->
     <script>
-
         function prepareEdit() {
             // Encuentra el radio button seleccionado
             const selectedRadio = document.querySelector('input[name="selectedStudent"]:checked');
@@ -332,6 +338,72 @@
                 closeModifyModal();
             }
         }
+    </script>
+    <!-- Inicializar DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#resultsTable').DataTable({
+                language: {
+                    processing:     "Procesando...",
+                    search:         "",
+                    lengthMenu:     "Mostrar _MENU_ elementos",
+                    info:           "Mostrando elementos del _START_ al _END_ de un total de _TOTAL_ elementos",
+                    infoEmpty:      "Mostrando elementos del 0 al 0 de un total de 0 elementos",
+                    infoFiltered:   "(filtrado de un total de _MAX_ elementos)",
+                    infoPostFix:    "",
+                    loadingRecords: "Cargando...",
+                    zeroRecords:    "No se encontraron resultados",
+                    emptyTable:     "No hay datos disponibles en la tabla",
+                    paginate: {
+                        first:      "Primero",
+                        previous:   "Anterior",
+                        next:       "Siguiente",
+                        last:       "Último"
+                    },
+                    aria: {
+                        sortAscending:  ": activar para ordenar la columna de manera ascendente",
+                        sortDescending: ": activar para ordenar la columna de manera descendente"
+                    }
+                },
+                dom: 'lrtip', // Oculta la barra de búsqueda
+                lengthMenu: [25, 50, 100], // Menú de longitud definido
+                pageLength: 25 // Valor por defecto
+            });
+        });
+    </script>
+    <!-- Interaccion con la entrada input y muestra de resultados -->
+    <script>
+        $(document).ready(function() {
+            let dataTable = $('#resultsTable').DataTable();
+        
+            $('#searchInput').on('input', function() {
+                const searchTerm = $(this).val();
+            
+                fetch('/searchList', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ searchTerm: searchTerm })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    dataTable.clear();
+                    data.results.forEach(row => {
+                        dataTable.row.add([
+                            `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
+                            row.codigoestudiante,
+                            row.dni,
+                            row.nombre,
+                            row.est_beca,
+                            row.nom_carrera
+                        ]).draw();
+                    });
+                })
+                .catch(error => console.error('Error al buscar:', error));
+            });
+        });
     </script>
 </body>
 </html>

@@ -78,22 +78,23 @@
             </div>
         </section>
         <section class="info-start">
-            <h1 id="mealTitle">DESAYUNO</h1>
-            <h2 id="countDisplay">0 / 0</h2>
-            <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
-            <form>
-                <button type="button" onclick="window.location.href='/printReport'">Imprimir Reporte</button>
-                <button type="button" onclick="window.location.href='/generatePDFReport'">Descargar PDF</button>
-                <button type="button" onclick="window.location.href='/generateExcelReport'">Descargar Excel</button>
-            </form>
-            <br>
-            <button id="toggleRegisterBtn">INICIAR REGISTRO</button>
+                <h1 id="mealTitle">DESAYUNO</h1>
+                <h2 id="countDisplay">0 / 0</h2>
+                <p>El reporte es para descargar el reporte de estudiantes que ingresaron en el desayuno o almuerzo</p>
+                <form>
+                    <button type="button" onclick="window.location.href='/printReport'">Imprimir Reporte</button>
+                    <button type="button" onclick="window.location.href='/generatePDFReport'">Descargar PDF</button>
+                    <button type="button" onclick="window.location.href='/generateExcelReport'">Descargar Excel</button>
+                </form>
         </section>
     </main>
 
     <!-- Include HTML5 QR Code library -->
     <script>
         document.getElementById('scanButton').addEventListener('click', () => {
+
+            alertify.message('Iniciando captura de QR...');
+
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
                     const qrCodeReader = new Html5Qrcode("reader");
@@ -116,28 +117,8 @@
             });
         });
     </script>
+    <!-- Inicializar DataTables -->
     <script>
-        document.getElementById('toggleRegisterBtn').addEventListener('click', () => {
-            const button = document.getElementById('toggleRegisterBtn');
-            const generateReportBtn = document.getElementById('generateReportBtn');
-            const searchButton = document.querySelector('#searchForm button[type="submit"]');
-            const registerButton = document.querySelector('#registerForm button[type="submit"]');
-    
-            if (button.textContent === 'INICIAR REGISTRO') {
-                button.textContent = 'CERRAR REGISTRO';
-                generateReportBtn.disabled = false;
-                searchButton.disabled = false;
-                registerButton.disabled = false;
-            } else {
-                button.textContent = 'INICIAR REGISTRO';
-                generateReportBtn.disabled = true;
-                searchButton.disabled = true;
-                registerButton.disabled = true;
-            }
-        });
-    </script>
-     <!-- Inicializar DataTables -->
-     <script>
         $(document).ready(function() {
             $('#resultsTable').DataTable({
                 language: {
@@ -168,42 +149,41 @@
             });
         });
     </script>
-    
-
-<script>
-    $(document).ready(function() {
-        let dataTable = $('#resultsTable').DataTable();
-
-        $('#searchInput').on('input', function() {
-            const searchTerm = $(this).val();
-
-            fetch('/searchList', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ searchTerm: searchTerm })
-            })
-            .then(response => response.json())
-            .then(data => {
-                dataTable.clear();
-                data.results.forEach(row => {
-                    dataTable.row.add([
-                        `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
-                        row.codigoestudiante,
-                        row.dni,
-                        row.nombre,
-                        row.est_beca,
-                        row.nom_carrera
-                    ]).draw();
-                });
-            })
-            .catch(error => console.error('Error al buscar:', error));
+    <!-- Interaccion con la entrada input y muestra de resultados -->
+    <script>
+        $(document).ready(function() {
+            let dataTable = $('#resultsTable').DataTable();
+        
+            $('#searchInput').on('input', function() {
+                const searchTerm = $(this).val();
+            
+                fetch('/searchList', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ searchTerm: searchTerm })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    dataTable.clear();
+                    data.results.forEach(row => {
+                        dataTable.row.add([
+                            `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
+                            row.codigoestudiante,
+                            row.dni,
+                            row.nombre,
+                            row.est_beca,
+                            row.nom_carrera
+                        ]).draw();
+                    });
+                })
+                .catch(error => console.error('Error al buscar:', error));
+            });
         });
-    });
-</script>
-    
+    </script>
+    <!-- Actualizacion del contador de estudiantes cada vez que se registren -->
     <script>
         async function updateStudentCounts() {
             try {
@@ -226,6 +206,7 @@
 
         updateStudentCounts();
     </script>
+    <!-- mostrar mensajes -->
     <script>
         <% if (typeof alertMessage !== 'undefined') { %>
             const alertMessage = '<%= alertMessage %>';

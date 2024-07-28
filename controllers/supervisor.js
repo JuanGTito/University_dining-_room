@@ -2,7 +2,7 @@ const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
 const connection = require('../conection/conexion');
 const baseQuery = `
-    SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera 
+    SELECT estudiante.codigoestudiante, estudiante.dni, CONCAT(estudiante.nombre, ' ', estudiante.ape_paterno, ' ', estudiante.ape_materno) AS nombre, estudiante.est_beca, carrera.nom_carrera 
     FROM estudiante 
     JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
 `;

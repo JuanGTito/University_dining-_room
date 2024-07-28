@@ -2,7 +2,7 @@ const express = require('express');
 const ExcelJS = require('exceljs');
 const connection = require('../conection/conexion');
 const baseQuery = `
-SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera 
+SELECT estudiante.codigoestudiante, estudiante.dni, CONCAT(estudiante.nombre, ' ', estudiante.ape_paterno, ' ', estudiante.ape_materno) AS nombre, estudiante.est_beca, carrera.nom_carrera 
     FROM estudiante 
     JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
 `;
@@ -24,66 +24,29 @@ function showListAdm(req, res) {
 
 // Function to get all students and render the 'adm' view
 function searchListAdm(req, res) {
-    const searchTerm = req.body.searchTerm.trim();
-    const login = req.session.loggedin || false;
+    const { searchTerm } = req.body;
 
-    if (searchTerm) {
-        let query = baseQuery;
-        let queryParams = [];
-        let alertMessage = '';
-        let alertType = 'message';
-        let redirect = false;
-        let redirectUrl = '';
-        let redirectDelay = 0;
+    const query = `
+        SELECT e.codigoestudiante, e.dni, CONCAT(e.nombre, ' ', e.ape_paterno, ' ', e.ape_materno) AS nombre,
+        e.est_beca, c.nom_carrera
+        FROM estudiante e
+        JOIN Carrera c ON e.idCarrera = c.idCarrera
+        WHERE e.nombre LIKE ? OR e.dni LIKE ? OR e.codigoestudiante LIKE ? OR e.ape_paterno LIKE ? OR e.ape_materno LIKE ? OR c.nom_carrera LIKE ?
+    `;
 
-        if (!isNaN(searchTerm)) {
-            query += ' WHERE codigoestudiante = ? OR dni = ?';
-            queryParams = [searchTerm, searchTerm];
-        } else {
-            alertMessage = 'El campo Código/DNI debe ser numérico.';
-            alertType = 'error';
-            redirect = true;
-            redirectUrl = '/adm';
-            redirectDelay = 2000;
+    const likeTerm = `%${searchTerm}%`;
+
+    connection.query(query, [likeTerm, likeTerm, likeTerm, likeTerm, likeTerm, likeTerm], (err, results) => {
+        if (err) {
+            console.error('Error al buscar estudiantes:', err);
+            return res.status(500).json({ error: 'Error al buscar estudiantes.' });
         }
 
-        connection.query(query, queryParams, (error, results) => {
-            if (error) {
-
-                alertMessage = 'Error en la consulta';
-                alertType = 'error';
-                redirect = true;
-                redirectUrl = '/adm';
-                redirectDelay = 2000;
-            }
-            console.log(error)
-            res.render('adm', {
-                results: results,
-                login: login,
-                name: req.session.name || '',
-                alertMessage: alertMessage || 'Encontrado',
-                alertType: alertType || 'success',
-                redirect: false,
-                redirectUrl: redirectUrl,
-                redirectDelay: 20000
-            });
-        });
-    } else {
-        res.render('adm', {
-            results: [],
-            login: login,
-            name: req.session.name || '',
-            alertMessage: 'El campo Código/DNI no puede estar vacío.',
-            alertType: 'error',
-            redirect: true,
-            redirectUrl: '/adm',
-            redirectDelay: 2000
-        });
-    }
+        res.json({ results });
+    });
 }
 
-
-// Function to add a new student
+// Funcion para agregar estudiante
 function addStudent(req, res) {
     const { codigoestudiante, dni, nombre, ape_paterno, ape_materno, est_beca, tip_beca, idCarrera } = req.body;
 
@@ -156,7 +119,7 @@ function editStudent(req, res) {
     });
 }
 
-// Function to delete a student
+// Funciona para eliminar estudiante
 function deleteStudent(req, res) {
     const { codigoestudiante } = req.params;
 
@@ -209,6 +172,5 @@ module.exports = {
     addStudent,
     editStudent,
     deleteStudent,
-    getStudent,
-    editStudent
+    getStudent
 };
