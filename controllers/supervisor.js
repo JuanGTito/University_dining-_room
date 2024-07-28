@@ -9,7 +9,6 @@ const baseQuery = `
 
 // Función para obtener todos los estudiantes
 function showList(req, res) {
-
     connection.query(baseQuery, (error, results) => {
         if (error) {
             console.error(error);
@@ -25,62 +24,27 @@ function showList(req, res) {
 
 // Función para buscar estudiante por código
 function searchList(req, res) {
-    const searchTerm = req.body.searchTerm.trim();
-    const login = req.session.loggedin || false;
+    const { searchTerm } = req.body;
 
-    if (searchTerm) {
-        let query = `
-            SELECT estudiante.codigoestudiante, estudiante.dni, estudiante.nombre, estudiante.est_beca, carrera.nom_carrera
-            FROM estudiante
-            JOIN carrera ON estudiante.idcarrera = carrera.idcarrera
-            WHERE estudiante.codigoestudiante LIKE ? OR estudiante.dni LIKE ? OR estudiante.nombre LIKE ?
-        `;
-        const queryParams = [
-            `%${searchTerm}%`,
-            `%${searchTerm}%`,
-            `%${searchTerm}%`
-        ];
+    const query = `
+        SELECT e.codigoestudiante, e.dni, CONCAT(e.nombre, ' ', e.ape_paterno, ' ', e.ape_materno) AS nombre,
+        e.est_beca, c.nom_carrera
+        FROM estudiante e
+        JOIN Carrera c ON e.idCarrera = c.idCarrera
+        WHERE e.nombre LIKE ? OR e.dni LIKE ? OR e.codigoestudiante LIKE ? OR e.ape_paterno LIKE ? OR e.ape_materno LIKE ? OR c.nom_carrera LIKE ?
+    `;
 
-        connection.query(query, queryParams, (error, results) => {
-            if (error) {
-                console.error('Error en la consulta:', error);
-                return res.status(500).render('register', {
-                    results: [],
-                    login: login,
-                    name: req.session.name || '',
-                    alertMessage: 'Error en la consulta',
-                    alertType: 'error',
-                    redirect: true,
-                    redirectUrl: '/register',
-                    redirectDelay: 2000
-                });
-            }
+    const likeTerm = `%${searchTerm}%`;
 
-            res.render('register', {
-                results: results,
-                login: login,
-                name: req.session.name || '',
-                alertMessage: results.length ? 'Resultados encontrados' : 'No se encontraron resultados',
-                alertType: results.length ? 'success' : 'warning',
-                redirect: false,
-                redirectUrl: '/register',
-                redirectDelay: 20000
-            });
-        });
-    } else {
-        res.render('register', {
-            results: [],
-            login: login,
-            name: req.session.name || '',
-            alertMessage: 'El campo Código/DNI no puede estar vacío.',
-            alertType: 'error',
-            redirect: true,
-            redirectUrl: '/register',
-            redirectDelay: 2000
-        });
-    }
+    connection.query(query, [likeTerm, likeTerm, likeTerm, likeTerm, likeTerm, likeTerm], (err, results) => {
+        if (err) {
+            console.error('Error al buscar estudiantes:', err);
+            return res.status(500).json({ error: 'Error al buscar estudiantes.' });
+        }
+
+        res.json({ results });
+    });
 }
-
 // Función para registrar asistencia
 function registerAttendance(req, res) {
     const codigoestudiante = req.body.selectedStudent;

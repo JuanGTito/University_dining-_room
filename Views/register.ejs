@@ -136,54 +136,73 @@
             }
         });
     </script>
-    <!-- Inicializar DataTables -->
      <!-- Inicializar DataTables -->
-    <script>
+     <script>
         $(document).ready(function() {
-            $('#resultsTable').DataTable(); // Inicializar DataTables en la tabla
+            $('#resultsTable').DataTable({
+                language: {
+                    processing:     "Procesando...",
+                    search:         "",
+                    lengthMenu:     "Mostrar _MENU_ elementos",
+                    info:           "Mostrando elementos del _START_ al _END_ de un total de _TOTAL_ elementos",
+                    infoEmpty:      "Mostrando elementos del 0 al 0 de un total de 0 elementos",
+                    infoFiltered:   "(filtrado de un total de _MAX_ elementos)",
+                    infoPostFix:    "",
+                    loadingRecords: "Cargando...",
+                    zeroRecords:    "No se encontraron resultados",
+                    emptyTable:     "No hay datos disponibles en la tabla",
+                    paginate: {
+                        first:      "Primero",
+                        previous:   "Anterior",
+                        next:       "Siguiente",
+                        last:       "Último"
+                    },
+                    aria: {
+                        sortAscending:  ": activar para ordenar la columna de manera ascendente",
+                        sortDescending: ": activar para ordenar la columna de manera descendente"
+                    }
+                },
+                dom: 'lrtip', // Oculta la barra de búsqueda
+                lengthMenu: [25, 50, 100], // Menú de longitud definido
+                pageLength: 25 // Valor por defecto
+            });
         });
     </script>
+    
 
-    <script>
-        $(document).ready(function() {
-    // Inicializar DataTables
-    let dataTable = $('#resultsTable').DataTable();
+<script>
+    $(document).ready(function() {
+        let dataTable = $('#resultsTable').DataTable();
 
-    // Manejo de la entrada del campo de búsqueda
-    $('#searchInput').on('input', function() {
-        const searchTerm = $(this).val();
+        $('#searchInput').on('input', function() {
+            const searchTerm = $(this).val();
 
-        // Realizar la solicitud al servidor con el término de búsqueda
-        fetch('/searchList', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ searchTerm: searchTerm })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Limpiar la tabla
-            dataTable.clear();
-
-            // Llenar la tabla con los nuevos datos
-            data.results.forEach(row => {
-                dataTable.row.add([
-                    `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
-                    row.codigoestudiante,
-                    row.dni,
-                    row.nombre,
-                    row.est_beca,
-                    row.nom_carrera
-                ]).draw();
-            });
-        })
-        .catch(error => console.error('Error al buscar:', error));
+            fetch('/searchList', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ searchTerm: searchTerm })
+            })
+            .then(response => response.json())
+            .then(data => {
+                dataTable.clear();
+                data.results.forEach(row => {
+                    dataTable.row.add([
+                        `<input type="radio" name="selectedStudent" value="${row.codigoestudiante}">`,
+                        row.codigoestudiante,
+                        row.dni,
+                        row.nombre,
+                        row.est_beca,
+                        row.nom_carrera
+                    ]).draw();
+                });
+            })
+            .catch(error => console.error('Error al buscar:', error));
+        });
     });
-});
-
-    </script>
+</script>
     
     <script>
         async function updateStudentCounts() {
