@@ -123,9 +123,37 @@ function updateMenuNutri(req, res) {
     });
 }
 
+function menuSemanalNutriconal(req, res) {
+    connection.query('SET lc_time_names = \'es_ES\'', (err) => {
+        if (err) return res.status(500).send('Error en la configuración del idioma');
+        
+        const query = `
+        SELECT 
+            DATE_FORMAT(m.fecha, '%W') AS dia_semana, 
+            MAX(CASE WHEN m.tip_menu = 'Desayuno' THEN c.nombre ELSE '' END) AS desayuno,
+            MAX(CASE WHEN m.tip_menu = 'Desayuno' THEN m.idMenu ELSE NULL END) AS desayuno_idMenu,
+            MAX(CASE WHEN m.tip_menu = 'Desayuno' THEN c.idComida ELSE NULL END) AS desayuno_idComida,
+            MAX(CASE WHEN m.tip_menu = 'Almuerzo' THEN c.nombre ELSE '' END) AS almuerzo,
+            MAX(CASE WHEN m.tip_menu = 'Almuerzo' THEN m.idMenu ELSE NULL END) AS almuerzo_idMenu,
+            MAX(CASE WHEN m.tip_menu = 'Almuerzo' THEN c.idComida ELSE NULL END) AS almuerzo_idComida
+        FROM Menu m
+        LEFT JOIN Comida c ON m.idMenu = c.idMenu
+        WHERE m.fecha BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY AND CURDATE() + INTERVAL (6 - WEEKDAY(CURDATE())) DAY
+        GROUP BY m.fecha, DATE_FORMAT(m.fecha, '%W')
+        ORDER BY m.fecha;
+        `;
+    
+        connection.query(query, (err, results) => {
+            if (err) return res.status(500).send('Error en la consulta');
+            res.json(results); // Enviar los datos al frontend en formato JSON
+        });
+    });
+}
+
 module.exports = {
     showListNutri,
     menuSemanalNutri,
     addMenuNutri,
     updateMenuNutri,
+    menuSemanalNutriconal
 };

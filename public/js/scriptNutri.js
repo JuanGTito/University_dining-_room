@@ -3,24 +3,32 @@ let inventarioVisible = false;
 
 // Función para abrir el modal con el contenido del menú
 function openMenuModal() {
-    fetch('/menuSemanal')
+    fetch('/menuSemanalNutriconal')
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('menuTableBody');
             tableBody.innerHTML = ''; // Limpia el contenido previo
+
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.dia_semana}</td>
-                    <td>${row.desayuno}</td>
-                    <td>${row.almuerzo}</td>
+                    <td>${row.desayuno || 'N/A'}</td>
+                    <td>${row.desayuno_idMenu !== null ? row.desayuno_idMenu : 'N/A'}</td>
+                    <td>${row.desayuno_idComida !== null ? row.desayuno_idComida : 'N/A'}</td>
+                    <td>${row.almuerzo || 'N/A'}</td>
+                    <td>${row.almuerzo_idMenu !== null ? row.almuerzo_idMenu : 'N/A'}</td>
+                    <td>${row.almuerzo_idComida !== null ? row.almuerzo_idComida : 'N/A'}</td>
                 `;
                 tableBody.appendChild(tr);
             });
+
             document.getElementById('menuModal').style.display = 'block';
         })
         .catch(error => console.error('Error al cargar el menú:', error));
 }
+
+
 
 function closeMenuModal() {
     document.getElementById('menuModal').style.display = 'none';
@@ -202,24 +210,56 @@ function modifySelectedRow() {
     document.getElementById('updateButton').style.display = 'block';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('menuTableBody');
+// Añadir el manejador de eventos para el clic en las celdas
+document.addEventListener('DOMContentLoaded', function() {
+    const menuTable = document.getElementById('menuTable');
+    let selectedCells = [];
 
-    // Función para manejar el clic en una fila
-    tableBody.addEventListener('click', function(e) {
-        const rows = tableBody.querySelectorAll('tr');
-        
-        // Elimina la selección de todas las filas
-        rows.forEach(row => row.classList.remove('selected'));
-        
-        // Verifica si el clic fue en una celda
-        const clickedRow = e.target.closest('tr');
-        if (clickedRow) {
-            clickedRow.classList.add('selected');
-            selectedRow = clickedRow; // Almacena la fila seleccionada
+    // Agregar eventos a las celdas para la selección
+    menuTable.addEventListener('click', function(event) {
+        if (event.target.tagName === 'TD') {
+            const cell = event.target;
+            const row = cell.parentElement;
+            const cells = row.getElementsByTagName('td');
+
+            // Limpiar selección previa
+            selectedCells.forEach(cell => cell.classList.remove('selected'));
+            selectedCells = [];
+
+            // Resaltar celdas específicas según la columna
+            const columnIndex = cell.cellIndex;
+
+            for (let i = 0; i < cells.length; i++) {
+                if (i === columnIndex) {
+                    cell.classList.add('selected');
+                    selectedCells.push(cell);
+                }
+                // Resaltar todas las celdas de la columna de desayuno
+                if (columnIndex === 1) {
+                    if (cells[i].cellIndex === 1 || cells[i].cellIndex === 2 || cells[i].cellIndex === 3) {
+                        cells[i].classList.add('selected');
+                        selectedCells.push(cells[i]);
+                    }
+                }
+                // Resaltar todas las celdas de la columna de almuerzo
+                if (columnIndex === 4) {
+                    if (cells[i].cellIndex === 4 || cells[i].cellIndex === 5 || cells[i].cellIndex === 6) {
+                        cells[i].classList.add('selected');
+                        selectedCells.push(cells[i]);
+                    }
+                }
+            }
         }
     });
+
+    // Función para limpiar la selección
+    function clearSelection() {
+        selectedCells.forEach(cell => cell.classList.remove('selected'));
+        selectedCells = [];
+    }
 });
+
+
 
 
 function updateMenuAndFood() {

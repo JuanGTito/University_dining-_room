@@ -77,35 +77,41 @@
         </section>
 
         <!-- Modal para visualizar el menú -->
-        <div id="menuModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeMenuModal()">&times;</span>
-                <h2>Menú Semanal</h2>
-                <hr>
-                <div class="crud-info">
-                    <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
-                    <button class="btn pulse-effect" type="button" onclick="showEditDialog()">Modificar</button>
-                    <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
-                </div>
-                <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
-                    <thead>
-                        <tr>
-                            <th>Día</th>
-                            <th>Desayuno</th>
-                            <th>Almuerzo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="menuTableBody">
-                        <!-- Las filas del menú se llenarán con JavaScript -->
-                    </tbody>
-                </table>
-                <div class="navigation-buttons">
-                    <button id="nextWeekButton" class="btn pulse-effect" type="button">
-                        <i class="fa fa-arrow-right"></i> Siguiente Semana
-                    </button>
-                </div>
-            </div>
+<!-- Modal para visualizar el menú -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMenuModal()">&times;</span>
+        <h2>Menú Semanal</h2>
+        <hr>
+        <div class="crud-info">
+            <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
+            <button class="btn pulse-effect" type="button" onclick="showEditDialog()">Modificar</button>
+            <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
         </div>
+        <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Día</th>
+                    <th>Desayuno</th>
+                    <th>ID Menú Desayuno</th>
+                    <th>ID Comida Desayuno</th>
+                    <th>Almuerzo</th>
+                    <th>ID Menú Almuerzo</th>
+                    <th>ID Comida Almuerzo</th>
+                </tr>
+            </thead>
+            <tbody id="menuTableBody">
+                <!-- Las filas del menú se llenarán con JavaScript -->
+            </tbody>
+        </table>
+        <div class="navigation-buttons">
+            <button id="nextWeekButton" class="btn pulse-effect" type="button">
+                <i class="fa fa-arrow-right"></i> Siguiente Semana
+            </button>
+        </div>
+    </div>
+</div>
+
         <div id="surveysModal" class="modal">
             <div class="modal-content">
               <div class="modal-header">
@@ -122,35 +128,35 @@
             </div>
         </div>
         <!-- Modal para Agregar/Modificar Menú y Comida -->
-<div id="addMenuAndFoodModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle">Agregar Menú y Comida</h2>
-        <form id="menuAndFoodForm">
-            <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" name="fecha" required><br>
-            
-            <label for="menuType">Tipo de Menú:</label>
-            <select id="menuType" name="menuType">
-                <option value="Desayuno">Desayuno</option>
-                <option value="Almuerzo">Almuerzo</option>
-            </select><br>
-            
-            <label for="comidaNombre">Nombre de la Comida:</label>
-            <input type="text" id="comidaNombre" name="comidaNombre" required><br>
-            
-            <label for="infoNutricional">Información Nutricional:</label>
-            <textarea id="infoNutricional" name="infoNutricional" required></textarea><br>
-            
-            <label for="ingredientes">Ingredientes:</label>
-            <textarea id="ingredientes" name="ingredientes" required></textarea><br>
-            
-            <button type="button" id="submitButton" onclick="submitMenuAndFoodForm()">Agregar</button>
-            <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Modificar</button>
-        </form>
-    </div>
-</div>
-
+        <div id="addMenuAndFoodModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalTitle">Agregar Menú y Comida</h2>
+                <form id="menuAndFoodForm" novalidate>
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha" required><br>
+                    
+                    <label for="menuType">Tipo de Menú:</label>
+                    <select id="menuType" name="menuType" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Desayuno">Desayuno</option>
+                        <option value="Almuerzo">Almuerzo</option>
+                    </select><br>
+                    
+                    <label for="comidaNombre">Nombre de la Comida:</label>
+                    <input type="text" id="comidaNombre" name="comidaNombre" required><br>
+                    
+                    <label for="infoNutricional">Información Nutricional:</label>
+                    <textarea id="infoNutricional" name="infoNutricional" required></textarea><br>
+                    
+                    <label for="ingredientes">Ingredientes:</label>
+                    <textarea id="ingredientes" name="ingredientes" required></textarea><br>
+                    
+                    <button type="button" id="submitButton" onclick="submitMenuAndFoodForm()">Agregar</button>
+                    <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Modificar</button>
+                </form>
+            </div>
+        </div>
     </main>
     
 </body>
