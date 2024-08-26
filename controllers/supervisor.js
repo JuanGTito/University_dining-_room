@@ -51,91 +51,142 @@ function registerAttendance(req, res) {
     const login = req.session.loggedin || false;
     const currentDateTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-    
-
     if (!codigoestudiante) {
-
         return res.render('register', {
-            results: [], // Asegura que se pase results aunque esté vacío
+            results: [],
             login: login,
             name: req.session.name || '',
             alertMessage: 'Código del estudiante no proporcionado.',
             alertType: 'error',
             redirect: true,
             redirectUrl: '/register',
-            redirectDelay: 4000
+            redirectDelay: 3000
         });
     }
 
-    const checkQuery = `
-        SELECT COUNT(*) AS count
-        FROM asistencia
-        WHERE codigoestudiante1 = ? AND fecha_hora >= DATE_SUB(NOW(), INTERVAL 3 HOUR)
+    // Verificar si el estudiante está activo
+    const statusQuery = `
+        SELECT est_beca
+        FROM estudiante
+        WHERE codigoestudiante = ?
     `;
 
-    connection.query(checkQuery, [codigoestudiante], (error, results) => {
+    connection.query(statusQuery, [codigoestudiante], (error, results) => {
         if (error) {
-            console.error('Error en la consulta de verificación de asistencia:', error);
+            console.error("Error al verificar el estudiante: ", error);
             return res.render('register', {
-                results: [], // Asegura que se pase results aunque esté vacío
+                results: [],
                 login: login,
                 name: req.session.name || '',
-                alertMessage: 'Error en la verificación de asistencia',
+                alertMessage: 'Error El Estado de Estudiante es Inactivo.',
                 alertType: 'error',
                 redirect: true,
                 redirectUrl: '/register',
-                redirectDelay: 4000
+                redirectDelay: 3000
             });
         }
 
-        const count = results[0].count;
-
-        if (count > 0) {
+        if (results.length === 0) {
             return res.render('register', {
-                results: [], // Asegura que se pase results aunque esté vacío
+                results: [],
                 login: login,
                 name: req.session.name || '',
-                alertMessage: 'Ya has registrado asistencia recientemente. Regresa dentro de 3 horas.',
-                alertType: 'warning',
-                redirect: false,
+                alertMessage: 'Estudiante no encontrado.',
+                alertType: 'error',
+                redirect: true,
                 redirectUrl: '/register',
-                redirectDelay: 4000
+                redirectDelay: 3000
             });
         }
 
-        const insertQuery = `
-            INSERT INTO asistencia (fecha_hora, codigoestudiante1)
-            VALUES (?, ?)
+        const studentStatus = results[0].est_beca;
+
+        if (studentStatus !== 'Activo') {
+            return res.render('register', {
+                results: [],
+                login: login,
+                name: req.session.name || '',
+                alertMessage: 'No puedes registrar asistencia porque el estudiante está inactivo.',
+                alertType: 'error',
+                redirect: true,
+                redirectUrl: '/register',
+                redirectDelay: 3000
+            });
+        }
+
+        // Verificar si la asistencia ya fue registrada recientemente
+        const checkQuery = `
+            SELECT COUNT(*) AS count
+            FROM asistencia
+            WHERE codigoestudiante1 = ? AND fecha_hora >= DATE_SUB(NOW(), INTERVAL 2 HOUR)
         `;
 
-        connection.query(insertQuery, [currentDateTime, codigoestudiante], (error) => {
+        connection.query(checkQuery, [codigoestudiante], (error, results) => {
             if (error) {
-                console.error('Error en la consulta de registro de asistencia:', error);
+                console.error('Error en la consulta de verificación de asistencia:', error);
                 return res.render('register', {
-                    results: [], // Asegura que se pase results aunque esté vacío
+                    results: [],
                     login: login,
                     name: req.session.name || '',
-                    alertMessage: 'Error en el registro de asistencia',
+                    alertMessage: 'Error en la verificación de asistencia',
                     alertType: 'error',
                     redirect: true,
                     redirectUrl: '/register',
-                    redirectDelay: 4000
+                    redirectDelay: 3000
                 });
             }
 
-            res.render('register', {
-                results: [], // Asegura que se pase results aunque esté vacío
-                login: login,
-                name: req.session.name || '',
-                alertMessage: 'Asistencia registrada correctamente.',
-                alertType: 'success',
-                redirect: false,
-                redirectUrl: '/register',
-                redirectDelay: 3000
+            const count = results[0].count;
+
+            if (count > 0) {
+                return res.render('register', {
+                    results: [],
+                    login: login,
+                    name: req.session.name || '',
+                    alertMessage: 'Ya has registrado asistencia recientemente. Regresa dentro de 3 horas.',
+                    alertType: 'warning',
+                    redirect: true,
+                    redirectUrl: '/register',
+                    redirectDelay: 3000
+                });
+            }
+
+            // Registrar la asistencia
+            const insertQuery = `
+                INSERT INTO asistencia (fecha_hora, codigoestudiante1)
+                VALUES (?, ?)
+            `;
+
+            connection.query(insertQuery, [currentDateTime, codigoestudiante], (error) => {
+                if (error) {
+                    console.error('Error en la consulta de registro de asistencia:', error);
+                    return res.render('register', {
+                        results: [],
+                        login: login,
+                        name: req.session.name || '',
+                        alertMessage: 'Error en el registro de asistencia',
+                        alertType: 'error',
+                        redirect: true,
+                        redirectUrl: '/register',
+                        redirectDelay: 3000
+                    });
+                }
+
+                res.render('register', {
+                    results: [],
+                    login: login,
+                    name: req.session.name || '',
+                    alertMessage: 'Asistencia registrada correctamente.',
+                    alertType: 'success',
+                    redirect: true,
+                    redirectUrl: '/register',
+                    redirectDelay: 3000
+                });
             });
         });
     });
 }
+
 
 // Función para registrar asistencia automáticamente
 function autoRegister(req, res) {
@@ -144,19 +195,20 @@ function autoRegister(req, res) {
 
     if (!codigo) {
         return res.render('register', {
-            results: results, // Asegura que se pase results aunque esté vacío
+            results: [], // Asegura que se pase results aunque esté vacío
             login: req.session.loggedin || false,
             name: req.session.name || '',
             alertMessage: 'Código de estudiante no proporcionado.',
             alertType: 'error',
-            redirect: false,
+            redirect: true,
             redirectUrl: '/register',
-            redirectDelay: 4000
+            redirectDelay: 3000
         });
     }
 
+    // Verificar si el estudiante existe y su estado
     const checkStudentQuery = `
-        SELECT COUNT(*) AS count
+        SELECT est_beca
         FROM estudiante
         WHERE codigoestudiante = ?
     `;
@@ -170,31 +222,45 @@ function autoRegister(req, res) {
                 name: req.session.name || '',
                 alertMessage: 'Error en la verificación del estudiante',
                 alertType: 'error',
-                redirect: false,
-                redirectUrl: redirectUrl,
-                redirectDelay: 4000
+                redirect: true,
+                redirectUrl: '/register',
+                redirectDelay: 3000
             });
         }
 
-        const studentExists = results[0].count > 0;
-
-        if (!studentExists) {
+        if (results.length === 0) {
             return res.render('register', {
                 results: [], // Asegura que se pase results aunque esté vacío
                 login: req.session.loggedin || false,
                 name: req.session.name || '',
                 alertMessage: 'El estudiante no existe en la base de datos.',
                 alertType: 'error',
-                redirect: false,
-                redirectUrl: redirectUrl,
-                redirectDelay: 4000
+                redirect: true,
+                redirectUrl: '/register',
+                redirectDelay: 3000
             });
         }
 
+        const studentStatus = results[0].est_beca;
+
+        if (studentStatus !== 'Activo') {
+            return res.render('register', {
+                results: [], // Asegura que se pase results aunque esté vacío
+                login: req.session.loggedin || false,
+                name: req.session.name || '',
+                alertMessage: 'No puedes registrar la asistencia porque el estudiante está inactivo.',
+                alertType: 'error',
+                redirect: true,
+                redirectUrl: '/register',
+                redirectDelay: 3000
+            });
+        }
+
+        // Verificar si la asistencia ya fue registrada recientemente
         const checkQuery = `
             SELECT COUNT(*) AS count
             FROM asistencia
-            WHERE codigoestudiante1 = ? AND fecha_hora >= DATE_SUB(NOW(), INTERVAL 3 HOUR)
+            WHERE codigoestudiante1 = ? AND fecha_hora >= DATE_SUB(NOW(), INTERVAL 2 HOUR)
         `;
         
         connection.query(checkQuery, [codigo], (error, results) => {
@@ -206,9 +272,9 @@ function autoRegister(req, res) {
                     name: req.session.name || '',
                     alertMessage: 'Error en la verificación de asistencia',
                     alertType: 'error',
-                    redirect: false,
+                    redirect: true,
                     redirectUrl: '/register',
-                    redirectDelay: 4000
+                    redirectDelay: 3000
                 });
             }
 
@@ -221,12 +287,13 @@ function autoRegister(req, res) {
                     name: req.session.name || '',
                     alertMessage: 'El estudiante ya está registrado. Vuelve a intentarlo después de 3 horas.',
                     alertType: 'warning',
-                    redirect: false,
+                    redirect: true,
                     redirectUrl: '/register',
-                    redirectDelay: 4000
+                    redirectDelay: 3000
                 });
             }
 
+            // Registrar la asistencia
             const insertQuery = `
                 INSERT INTO asistencia (fecha_hora, codigoestudiante1)
                 VALUES (?, ?)
@@ -241,9 +308,9 @@ function autoRegister(req, res) {
                         name: req.session.name || '',
                         alertMessage: 'Error en el registro de asistencia',
                         alertType: 'error',
-                        redirect: false,
+                        redirect: true,
                         redirectUrl: '/register',
-                        redirectDelay: 4000
+                        redirectDelay: 3000
                     });
                 }
 
@@ -253,9 +320,9 @@ function autoRegister(req, res) {
                     name: req.session.name || '',
                     alertMessage: 'Asistencia registrada correctamente.',
                     alertType: 'success',
-                    redirect: false,
+                    redirect: true,
                     redirectUrl: '/register',
-                    redirectDelay: 4000
+                    redirectDelay: 2500
                 });
             });
         });
@@ -263,7 +330,6 @@ function autoRegister(req, res) {
 }
 
 /// PARTE START
-
 async function generateExcelReport(req, res) {
     const today = new Date().toISOString().slice(0, 10); // Fecha de hoy en formato YYYY-MM-DD
     const sql = `

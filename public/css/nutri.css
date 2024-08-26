@@ -4,12 +4,15 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
+body{
+    font-family: 'Outfit';
+    margin: 0;
+    padding: 0;
+    background-color: #EEEEEE;
 }
 
 header {
-    background-color: #3c6dc7;
+    background-color: #134B70;
     color: white;
     padding: 10px 20px;
     display: flex;
@@ -20,69 +23,6 @@ header {
     display: flex;
     flex-direction: row;
     padding-left: 6px;
-}
-.header-content p {
-    margin: 0;
-}
-
-.header-content a {
-    color: white;
-    text-decoration: none;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-}
-
-main {
-    padding: 20px;
-}
-
-.nutricionista {
-    background-color: #e0f7fa;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.btn-inventario {
-    background-color: #00bcd4;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sections {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.section {
-    text-align: center;
-}
-
-.section img {
-    width: 100px;
-    height: 100px;
-    display: block;
-    margin: 0 auto 10px;
-}
-
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
 }
 .btn {
     border: none; 
@@ -104,57 +44,222 @@ main {
     border-radius: 5px;
     cursor: pointer;
 }
-#inventario table {
+
+main{
+    display: flex;
+    padding: 15px;
+    font-family: "Outfit", sans-serif;
+}
+.input-search{
+    background-color: rgb(255, 255, 255);
+    margin-right: 10px;
+    height: 90vh;
+    width: 70%;
+    border-radius: 20px;
+}
+
+.input-search h2{
+    background-color: #134B70;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem 2rem;
+    margin: 1rem;    
+}
+.img-nutr{
+    display: flex;
+    padding: 1rem;
+}
+.img-nutr-display{
+    display: grid;
+    grid-template-columns: repeat(2);
+}
+.two {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    height: 15rem;
+    grid-column: 1 / 6;
+    grid-row: 1;
+  }
+.five {
+    width: 100%;
+    height: 15rem;
+    grid-column: 1;
+    grid-row: 2;
+  }
+.six {
+    width: 100%;
+    height: 15rem;
+    grid-column: 2;
+    grid-row: 2;
+  }
+.nutri-1{
+    width: 50%;
+    height: 30rem;
+}
+.search-info form{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
 }
 
-#inventario th, #inventario td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-
-#inventario th {
-    background-color: #f2f2f2;
-}
-
-/* Estilos para el botón */
-.btn-inventario {
-    background-color: #00bcd4; /* Color de fondo verde */
-    color: white;
-    padding: 10px 20px;
+.search-info  form input{
+    background-color: #EEEEEE;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 15px;
     border: none;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+.pulse-effect {
+    border: none;
+    color: white;
+    padding: 14px 20px;
     cursor: pointer;
-    border-radius: 5px; /* Bordes redondeados */
+    border-radius: 10px;
+    background-color: #134B70; /* Color base del botón */
+    transition: transform 0.3s ease-in-out; /* Transición suave del efecto de pulsación */
 }
 
-.btn-inventario:hover {
-    background-color: #ccd5e0; /* Color más oscuro al pasar el mouse */
+.pulse-effect:hover {
+    background-color: #0c2f46; /* Cambia el color al pasar el cursor sobre el botón */
 }
 
-#inventario table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.pulse-effect:active {
+    transform: scale(0.9); /* Reduce ligeramente el tamaño del botón cuando se hace clic */
 }
 
-#inventario th, #inventario td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
+.info-start{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: rgb(255, 255, 255);
+    height: 90vh;
+    width: 30%;
+    border-radius: 20px;
+}
+.info-start p{
+    font-size: 20px;
+    font-weight: 700;
+    margin: 20px;
+}
+/*Modales*/
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+}
+.modal-header, .modal-body, .modal-footer {
+    margin-bottom: 10px;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-#inventario th {
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu-diario {
+    text-align: center;
     background-color: #f2f2f2;
 }
 
-#agregarProductoForm {
-    margin-top: 20px;
+.dia-semanal {
+    background-color: #f2f2f2;
+    text-align: center;
 }
 
-#agregarProductoForm input,
-#agregarProductoForm button {
-    margin-bottom: 10px;
+.comida-diaria {
+    text-align: center;
 }
+.navigation-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+.navigation-buttons .btn {
+    font-size: 16px;
+    padding: 10px 20px;
+}
+
+ /* Estilo para la lista de encuestas */
+.survey-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.survey-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.survey-comment {
+    font-weight: bold;
+}
+
+.survey-score {
+    color: #007bff;
+}
+
+.modal-footer {
+    text-align: center;
+}
+
+.table-container {
+    max-height: 85vh;
+    overflow-y: auto;
+    margin: 20px 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    background-color: #f4f4f4;
+}
+.info-list table{
+    width: 100%;
+    text-align: center;
+}
+/* Estilo para la fila seleccionada */
+.selected {
+    background-color: #d3d3d3; /* Color de fondo para la fila seleccionada */
+}
+

@@ -195,6 +195,16 @@ table th {
     width: 80%; 
 }
 
+.modal-header, .modal-body, .modal-footer {
+    margin-bottom: 10px;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
 .close {
     color: #aaa;
     float: right;
@@ -208,3 +218,40 @@ table th {
     text-decoration: none;
     cursor: pointer;
 }
+
+.menu-diario {
+    text-align: center;
+    background-color: #f2f2f2;
+}
+
+.dia-semanal {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.comida-diaria {
+    text-align: center;
+}
+
+ /* Estilo para la lista de encuestas */
+ .survey-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .survey-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .survey-comment {
+    font-weight: bold;
+  }
+
+  .survey-score {
+    color: #007bff;
+  }
+
+  .modal-footer {
+    text-align: center;
+  }

@@ -174,5 +174,7 @@ table th {
 }
 
 #reader {
-    display: none; /* Ocultar el div del lector de QR */
+    display: block;
+    width: 400px; 
+    height: 400px
 }

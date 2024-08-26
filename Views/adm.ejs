@@ -75,19 +75,29 @@
             </div>
         </section>
         <section class="info-start">
-            <button class="btn pulse-effect">Visualizar Menu</button>
-            <button class="btn pulse-effect">Asistencia Fecha</button>
-            <button class="btn pulse-effect">Importar Relacion</button>
-            <button class="btn pulse-effect">Concesionaria</button>
-            <button class="btn pulse-effect">Inventario Productos</button>
-            <button class="btn pulse-effect">Reporte Quejas</button>
-            <button class="btn pulse-effect">Exportar Relacion</button> 
-            <form action="/generateReport" method="get">
-                <button class="btn pulse-effect" type="submit">Generar Reporte</button>
-            </form>
+            <button class="btn pulse-effect" onclick="openMenuModal()">Visualizar Menu</button>
+            <button class="btn pulse-effect" onclick="openModalFecha()">Asistencia Fecha</button>
+            <button class="btn pulse-effect" id="importarRelacionBtn">Importar Relación</button> <!-- El Modal para Agregar Estudiante -->
+            <input type="file" id="fileInput" style="display: none;" />
+            <button class="btn pulse-effect" onclick="openModal()">Reporte Quejas</button>
+            <button class="btn pulse-effect" id="exportarRelacionBtn">Exportar Relacion</button>
+            
         </section>
     </main>
 
+    <!-- Modal para seleccionar la fecha -->
+    <div id="modalFecha" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModalFecha()">&times;</span>
+            <h2>Seleccionar Fecha de Asistencia</h2>
+            <form id="exportAttendanceForm">
+                <label for="fechaAsistencia">Seleccionar fecha:</label>
+                <input type="date" id="fechaAsistencia" name="fechaAsistencia" required><br><br>
+                <button type="button" onclick="exportarAsistencia()">Exportar Asistencia</button>
+            </form>
+        </div>
+    </div>
+    
     <!-- El Modal para Agregar Estudiante -->
     <div id="addModal" class="modal">
         <div class="modal-content">
@@ -173,5 +183,43 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal para visualizar el menú -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMenuModal()">&times;</span>
+            <h2>Menú Semanal</h2>
+            <hr>
+            <table border="1" style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Desayuno</th>
+                        <th>Almuerzo</th>
+                    </tr>
+                </thead>
+                <tbody id="menuTableBody">
+                    <!-- Las filas del menú se llenarán con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="surveysModal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Encuestas</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+          </div>
+          <div class="modal-body">
+            <ul id="surveyList" class="survey-list">
+              <!-- Las encuestas se insertarán aquí mediante JavaScript -->
+            </ul>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+
 </body>
 </html>

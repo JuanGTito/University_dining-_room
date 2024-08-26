@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/assets/css/principal.css">
+    <script src="../assets/js/scriptFirst.js"></script>
 </head>
 <body>
     <header class="cabecera">
@@ -15,15 +16,13 @@
             <div class=" telefono">+123 456 789</div>
         </div>
         <div class="right-info">
-            <button id="myButton" class="btn primary"><a>Menu</a></button>
-            <button id="myButton1" class="btn primary"><a>¿Quienes Somos?</a></button>
-            <button class="btn primary">
+            <button class="btn primary" onclick="showMenu()"><a>Menu</a></button>
+            <button class="btn primary" onclick="showQuienesSomos()"><a>¿Quienes Somos?</a></button>
                 <% if (login) { %>                                        
-                    <button><a href="logout" class="a-logout">Salir</a></button>
+                    <a href="logout" class="a-logout"><button class="btn primary">Salir</button></a>
                 <%} else { %>   
-                    <a href="login" class="a-login">Iniciar Sesion</a>
+                    <a href="login" class="a-login"><button class="btn primary">Iniciar Sesion</button></a>
                 <% } %>
-            </button> 
         </div>
     </header>
     <Main> 
@@ -39,67 +38,52 @@
                 </a>
                 <img src="/assets/img/font-img/imgf-3.png" alt="">
                 <img src="/assets/img/font-img/imgf-4.png" alt="">
-                <img src="/assets/img/font-img/imgf-5.png" alt="">
-                <img src="/assets/img/font-img/imgf-6.png" alt=""> 
+                <button class="btn1" onclick="openSurveyModal()">
+                    <img src="/assets/img/font-img/imgf-5.png" alt="">
+                    <img src="/assets/img/font-img/imgf-6.png" alt="">    
+                </button>
             </div>
        </section> 
     </Main>
-    <script>
-        var tableContent = `
-            <h2>Degustación Semanal</h2>
+    <!-- Modal -->
+    <div id="surveyModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Formulario de Encuesta</h2>
+          <span class="close" onclick="closeSurveyModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+          <form id="surveyForm">
+            <label for="comentario">Comentario:</label>
+            <textarea id="comentario" name="comentario" rows="4" required></textarea>
+  
+            <label for="puntuacion">Puntuación (1-5):</label>
+            <input type="number" id="puntuacion" name="puntuacion" min="1" max="5" required>
+  
+            <button type="button" onclick="submitSurvey()">Enviar Encuesta</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal para visualizar el menú -->
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMenuModal()">&times;</span>
+            <h2>Menú Semanal</h2>
             <hr>
             <table border="1" style="width:100%; border-collapse:collapse;">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th class="menu-diario">Desayuno</th>
-                        <th class="menu-diario">Almuerzo</th>
+                        <th>Día</th>
+                        <th>Desayuno</th>
+                        <th>Almuerzo</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="dia-semanal">Lunes</td>
-                        <td class="comida-diaria">Avena, Frutas, Café</td>
-                        <td class="comida-diaria">Pollo a la plancha, Ensalada, Arroz</td>
-                    </tr>
-                    <tr>
-                        <td class="dia-semanal">Martes</td>
-                        <td class="comida-diaria">Huevos revueltos, Pan tostado, Jugo</td>
-                        <td class="comida-diaria">Pasta con salsa, Vegetales, Jugo</td>
-                    </tr>
-                    <tr>
-                        <td class="dia-semanal">Miércoles</td>
-                        <td class="comida-diaria">Yogur, Granola, Frutas</td>
-                        <td class="comida-diaria">Carne asada, Papas, Ensalada</td>
-                    </tr>
-                    <tr>
-                        <td class="dia-semanal">Jueves</td>
-                        <td class="comida-diaria">Pancakes, Miel, Frutas</td>
-                        <td class="comida-diaria">Pescado, Arroz, Verduras</td>
-                    </tr>
-                    <tr>
-                        <td class="dia-semanal">Viernes</td>
-                        <td class="comida-diaria">Cereal, Leche, Frutas</td>
-                        <td class="comida-diaria">Pollo al horno, Puré de papas, Ensalada</td>
-                    </tr>
+                <tbody id="menuTableBody">
+                    <!-- Las filas del menú se llenarán con JavaScript -->
                 </tbody>
             </table>
-        `;
-        var quienesSomos = `
-            <p>
-                Bienvenidos al Comedor Universitario de la Universidad Nacional De Juliaca. Somos un espacio dedicado a proporcionar a nuestra comunidad estudiantil, una alimentación balanceada, saludable y accesible. Nuestro objetivo es no solo satisfacer las necesidades nutricionales, sino también fomentar hábitos alimenticios saludables y sostenibles.
-            </p>
-        `;
-        document.getElementById('myButton').onclick = function() {
-            alertify.alert('Menu Principal', tableContent, function(){
-                alertify.success('YES');
-            });
-        };
-        document.getElementById('myButton1').onclick = function() {
-            alertify.alert('Quines Somos', quienesSomos, function(){
-                alertify.success('Ok');
-            });
-        };
-    </script>
+        </div>
+    </div>
 </body>
 </html>

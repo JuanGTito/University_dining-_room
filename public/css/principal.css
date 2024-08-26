@@ -37,6 +37,11 @@ body{
     font-weight: 700;
     margin-right: 5px;
 }
+.btn1 {
+    border: none;
+    background: #ffffff; 
+    cursor: pointer;
+}
 .primary {background-color: #e7e7e7; color: black;} 
 .primary:hover {background: #cfcfcf;}
 
@@ -56,3 +61,83 @@ body{
     margin: 10px;
     width: 15vh;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 600px;
+  }
+
+  .modal-header, .modal-body, .modal-footer {
+    margin-bottom: 10px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.close {
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu-diario {
+    text-align: center;
+    background-color: #f2f2f2;
+}
+
+.dia-semanal {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.comida-diaria {
+    text-align: center;
+}
+
+  /* Estilo para el formulario */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-top: 10px;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button {
+    margin-top: 10px;
+  }

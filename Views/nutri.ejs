@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nutricionista</title>
+    <!-- CSS de DataTables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="../assets/css/nutri.css">
+    <script src="../assets/js/scriptNutri.js"></script>
 </head>
 <body>
     <header>
@@ -21,124 +28,130 @@
         </div>
     </header>
     <main>
-        <section class="nutricionista">
-            <h1>Nutricionista</h1>
-
-            <button class="btn-inventario" onclick="toggleInventario()">Inventario de Productos</button>
-            <div id="inventario" style="display: none;"></div>
-
-            <h2>Agregar Producto</h2>
-            <form id="agregarProductoForm">
-                <input type="number" id="idInventario" placeholder="ID" required>
-                <input type="text" id="nombre" placeholder="Nombre" required>
-                <input type="number" id="cant_disponible" placeholder="Cantidad" required>
-                <input type="date" id="fecha_caducidad" required>
-                <button type="submit">Agregar Producto</button>
-            </form>
-
-            <script>
-                let tablaVisible = false;
-
-                async function fetchInventario() {
-                    const response = await fetch('/inventario');
-                    const inventario = await response.json();
-                    const inventarioDiv = document.getElementById('inventario');
-
-                    // Crear tabla
-                    let tablaHTML = `
-                        <h2>Inventario de Productos</h2>
-                        <table> <tr>
-                                <th></th> 
-                                <th>ID</th>
-                                <th>NOMBRE</th>
-                                <th>CANTIDAD</th>
-                                <th>FECHA CADUCIDAD</th>
-                            </tr>
-                    `;
-
-                    inventario.forEach(item => {
-                        tablaHTML += `
+        <section class="input-search">
+            <div id="inventario" class="info-list" style="display: none;">
+                <div class="table-container">
+                    <table id="resultsTable" class="display">
+                        <thead>
                             <tr>
-                                <td><input type="radio" name="estudiante"></td>
-                                <td>${item.idInventario || "-"}</td> 
-                                <td>${item.nombre || "-"}</td>
-                                <td>${item.cant_disponible || "-"}</td>
-                                <td>${item.fecha_caducidad || "-"}</td>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Fecha Caducidad</th>
+                                <th>Categoria</th>
                             </tr>
-                        `;
-                    });
-
-                    tablaHTML += '</table>';
-
-                    inventarioDiv.innerHTML = tablaHTML;
-                }
-
-                function toggleInventario() {
-                    const inventarioDiv = document.getElementById('inventario');
-
-                    if (tablaVisible) {
-                        inventarioDiv.style.display = 'none';
-                    } else {
-                        fetchInventario();
-                        inventarioDiv.style.display = 'block'; 
-                    }
-                    tablaVisible = !tablaVisible; 
-                }
-
-                const agregarProductoForm = document.getElementById('agregarProductoForm');
-
-                agregarProductoForm.addEventListener('submit', async (event) => {
-                    event.preventDefault();
-
-                    const nuevoProducto = {
-                        idInventario: document.getElementById('idInventario').value,
-                        nombre: document.getElementById('nombre').value,
-                        cant_disponible: document.getElementById('cant_disponible').value,
-                        fecha_caducidad: document.getElementById('fecha_caducidad').value
-                    };
-
-                    try {
-                        const response = await fetch('/agregar_producto', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(nuevoProducto)
-                        });
-
-                        if (response.ok) {
-                            alert('Producto agregado con éxito');
-                            toggleInventario(); // Actualizar y mostrar la tabla
-                            agregarProductoForm.reset(); // Limpiar el formulario
-                        } else {
-                            alert('Error al agregar el producto');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Error al agregar el producto');
-                    }
-                });
-            </script>
-
-            <div class="sections">
-                <div class="section">
-                    <img src="../assets/img/font-img/imgf-1.png" alt="">
-                    <p>Información Nutricional y Consejos de Salud</p>
-                </div>
-                <div class="section">
-                    <img src="../assets/img/font-img/imgf-3.png" alt="">
-                    <p>Blog de Salud y Bienestar</p>
-                </div>
-                <div class="section">
-                    <img src="../assets/img/font-img/imgf-5.png" alt="">
-                    <p>Educación nutricional</p>
+                        </thead>
+                        <tbody>
+                            <% results.forEach((user) => { %>
+                                <tr>
+                                    <td><%= user.idInventario %></td>
+                                    <td><%= user.nombre %></td>
+                                    <td><%= user.cant_disponible %></td>
+                                    <td><%= user.fecha_caducidad %></td>
+                                    <td><%= user.nom_categoria %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="buttons">
-                <button class="btn-menu">Menu</button>
-                <button class="btn-exportar">Exportar</button>
-            </div>
+            <section id="ocultar" style="display: block;">
+                <h2>¡Bienvenido! Aqui puedes emepzar a planificar y organizar tus consultas y planes de alimentacion </h2>
+                <div class="img-nutr">
+                    <img class="nutri-1" src="../assets/img/font-img/imgf-9.jpg" alt="">
+                    <div class="img-nutr-display">
+                        <img class="two" src="../assets/img/font-img/imgf-10.jpg" alt="">
+                        <img class="five" src="../assets/img/font-img/imgf-11.jpg" alt="">
+                        <img class="six" src="../assets/img/font-img/imgf-12.jpg" alt="">
+                    </div>
+                </div>    
+            </section>
+            
         </section>
+        <section class="info-start">
+            <p>Nutricionista</p>
+            <button class="btn pulse-effect" onclick="openMenuModal()">Menu</button>
+            <button class="btn pulse-effect btn-inventario" onclick="toggleInventario()">Inventario de Productos</button>
+            <button class="btn pulse-effect" onclick="openModalEnc()">Reporte Quejas</button>
+            
+        </section>
+
+        <!-- Modal para visualizar el menú -->
+        <div id="menuModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeMenuModal()">&times;</span>
+                <h2>Menú Semanal</h2>
+                <hr>
+                <div class="crud-info">
+                    <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
+                    <button class="btn pulse-effect" type="button" onclick="showEditDialog()">Modificar</button>
+                    <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
+                </div>
+                <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Día</th>
+                            <th>Desayuno</th>
+                            <th>Almuerzo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuTableBody">
+                        <!-- Las filas del menú se llenarán con JavaScript -->
+                    </tbody>
+                </table>
+                <div class="navigation-buttons">
+                    <button id="nextWeekButton" class="btn pulse-effect" type="button">
+                        <i class="fa fa-arrow-right"></i> Siguiente Semana
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="surveysModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Encuestas</h2>
+                <span class="close" onclick="closeModalEnc()">&times;</span>
+              </div>
+              <div class="modal-body">
+                <ul id="surveyList" class="survey-list">
+                  <!-- Las encuestas se insertarán aquí mediante JavaScript -->
+                </ul>
+              </div>
+              <div class="modal-footer">
+              </div>
+            </div>
+        </div>
+        <!-- Modal para Agregar/Modificar Menú y Comida -->
+<div id="addMenuAndFoodModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Agregar Menú y Comida</h2>
+        <form id="menuAndFoodForm">
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" required><br>
+            
+            <label for="menuType">Tipo de Menú:</label>
+            <select id="menuType" name="menuType">
+                <option value="Desayuno">Desayuno</option>
+                <option value="Almuerzo">Almuerzo</option>
+            </select><br>
+            
+            <label for="comidaNombre">Nombre de la Comida:</label>
+            <input type="text" id="comidaNombre" name="comidaNombre" required><br>
+            
+            <label for="infoNutricional">Información Nutricional:</label>
+            <textarea id="infoNutricional" name="infoNutricional" required></textarea><br>
+            
+            <label for="ingredientes">Ingredientes:</label>
+            <textarea id="ingredientes" name="ingredientes" required></textarea><br>
+            
+            <button type="button" id="submitButton" onclick="submitMenuAndFoodForm()">Agregar</button>
+            <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Modificar</button>
+        </form>
+    </div>
+</div>
+
     </main>
+    
 </body>
 </html>

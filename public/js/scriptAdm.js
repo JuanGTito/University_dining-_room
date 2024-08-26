@@ -154,6 +154,52 @@ function confirmDelete() {
     );
 }
 
+// Función para exportar la asistencia
+function exportarAsistencia() {
+    const fecha = document.getElementById('fechaAsistencia').value;
+
+    if (fecha) {
+        // Hacer una solicitud al backend con la fecha seleccionada
+        fetch('/exportarAsistencia', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ fecha: fecha }),
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            // Crear un enlace para descargar el archivo
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'asistencia_' + fecha + '.xlsx'; // Nombre del archivo
+            document.body.appendChild(a);
+            a.click();
+            a.remove(); // Eliminar el enlace después de descargar
+        })
+        .catch(error => {
+            console.error('Error al exportar la asistencia:', error);
+        });
+
+        // Cerrar el modal después de la solicitud
+        closeModalFecha();
+    } else {
+        alert('Por favor selecciona una fecha.');
+    }
+}
+
+
+// Abre el modal de fecha
+function openModalFecha() {
+    document.getElementById('modalFecha').style.display = 'block';
+}
+
+// Cierra el modal de fecha
+function closeModalFecha() {
+    document.getElementById('modalFecha').style.display = 'none';
+}
+
 window.onclick = function(event) {
     if (event.target == document.getElementById('addModal')) {
         closeModal();
@@ -225,3 +271,97 @@ $(document).ready(function() {
         .catch(error => console.error('Error al buscar:', error));
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const importarRelacionBtn = document.getElementById('importarRelacionBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    importarRelacionBtn.addEventListener('click', () => {
+        fileInput.click(); // Simula el clic en el input de archivo
+    });
+
+    fileInput.addEventListener('change', (event) => {
+        if (event.target.files.length > 0) {
+            const formData = new FormData();
+            formData.append('file', event.target.files[0]);
+
+            // Enviar el archivo al servidor
+            fetch('/importar-relacion', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Archivo importado correctamente.');
+                } else {
+                    alert('Error al importar el archivo: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al importar el archivo.');
+            });
+        }
+    });
+});
+
+function openMenuModal() {
+    fetch('/menuSemanal')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('menuTableBody');
+            tableBody.innerHTML = ''; // Limpia el contenido previo
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.dia_semana}</td>
+                    <td>${row.desayuno}</td>
+                    <td>${row.almuerzo}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            document.getElementById('menuModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error al cargar el menú:', error));
+}
+
+function closeMenuModal() {
+    document.getElementById('menuModal').style.display = 'none';
+}
+
+function openModal() {
+    fetch('/encuestas')
+      .then(response => response.json())
+      .then(data => {
+        const surveyList = document.getElementById('surveyList');
+        surveyList.innerHTML = ''; // Limpiar la lista antes de agregar los datos
+        
+        data.forEach(survey => {
+          const listItem = document.createElement('li');
+          listItem.classList.add('survey-item');
+          listItem.innerHTML = `<div class="survey-comment">${survey.Comentario}</div>
+                                <div class="survey-score">Puntuación: ${survey.Puntuacion}</div>`;
+          surveyList.appendChild(listItem);
+        });
+        
+        document.getElementById('surveysModal').style.display = 'flex';
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function closeModal() {
+    document.getElementById('surveysModal').style.display = 'none';
+  }
+
+  window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('surveysModal')) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('exportarRelacionBtn').addEventListener('click', () => {
+      window.location.href = '/exportStudents';
+    });
+  });
