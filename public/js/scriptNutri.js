@@ -1,4 +1,6 @@
 let inventarioVisible = false;
+let selectedCells = [];
+let selectedRow = null;
 
 // Función para abrir el modal con el contenido del menú
 function openMenuModal() {
@@ -114,39 +116,28 @@ $(document).ready(function() {
 function getNextWeekStartDate() {
     const currentDate = new Date();
     const currentDayOfWeek = currentDate.getUTCDay();
-
-    // Si hoy es domingo (0), la próxima semana comienza el lunes de la semana siguiente
-    // Si hoy es lunes a sábado, la próxima semana comienza en 7 días
     const daysUntilNextMonday = (currentDayOfWeek === 0 ? 1 : 8 - currentDayOfWeek); 
-
-    // Calcula la fecha del próximo lunes
     const nextWeekStartDate = new Date(currentDate);
     nextWeekStartDate.setUTCDate(currentDate.getUTCDate() + daysUntilNextMonday);
-
-    return nextWeekStartDate.toISOString().split('T')[0]; // Devuelve la fecha en formato YYYY-MM-DD
+    return nextWeekStartDate.toISOString().split('T')[0];
 }
 
 // Función para obtener la fecha del último día de la próxima semana
 function getNextWeekEndDate(startDate) {
     const start = new Date(startDate);
     const endDate = new Date(start);
-    endDate.setUTCDate(start.getUTCDate() + 6); // Obtiene el último día de la semana
-    return endDate.toISOString().split('T')[0]; // Formatea la fecha final
+    endDate.setUTCDate(start.getUTCDate() + 6);
+    return endDate.toISOString().split('T')[0];
 }
 
 // Función para manejar el clic del botón de la próxima semana
 function handleNextWeekClick() {
-    // Obtener la fecha de inicio de la próxima semana
     const nextWeekStartDate = getNextWeekStartDate();
-    
-    // Calcular la fecha de fin de la próxima semana (último día)
     const nextWeekEndDate = getNextWeekEndDate(nextWeekStartDate);
 
-    // Imprimir las fechas en la consola para depuración
     console.log(`Fecha de inicio de la próxima semana: ${nextWeekStartDate}`);
     console.log(`Fecha de fin de la próxima semana: ${nextWeekEndDate}`);
 
-    // Hacer la solicitud al servidor con las fechas calculadas
     fetch(`/menuSemanalNutri?startDate=${nextWeekStartDate}&endDate=${nextWeekEndDate}`)
         .then(response => response.json())
         .then(data => {
@@ -221,10 +212,6 @@ function mostrarNotificacion(mensaje) {
         notificacion.remove();
     }, 3000); // La notificación desaparecerá después de 3 segundos
 }
-
-// Variables globales
-let selectedCells = [];
-let selectedRow = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     const menuTable = document.getElementById('menuTable');
@@ -459,15 +446,6 @@ function refreshCurrentWeekMenu() {
         .catch(error => {
             console.error('Error al obtener el menú actual:', error);
         });
-}
-
-function clearSelection() {
-    selectedCells.forEach(cell => cell.classList.remove('selected'));
-    selectedCells = [];
-    if (selectedRow) {
-        selectedRow.classList.remove('selected-row');
-        selectedRow = null;
-    }
 }
 
 function hideUnwantedColumns() {
