@@ -13,6 +13,12 @@ JOIN
     categoria ON inventario.idCategoria = categoria.idCategoria;
 `;
 
+function getNextWeekDates() {
+    const startDate = moment().startOf('isoWeek').add(1, 'week').format('YYYY-MM-DD');
+    const endDate = moment(startDate).endOf('week').format('YYYY-MM-DD');
+    return { startDate, endDate };
+}
+
 // Function to get all students and render the 'adm' view
 function showListNutri(req, res) {
     connection.query(baseQuery, (error, results) => {
@@ -32,8 +38,7 @@ function menuSemanalNutri(req, res) {
     connection.query('SET lc_time_names = \'es_ES\'', (err) => {
         if (err) return res.status(500).send('Error en la configuración del idioma');
         
-        const startDate = req.query.startDate;
-        const endDate = moment(startDate).add(6, 'days').format('YYYY-MM-DD');
+        const { startDate, endDate } = getNextWeekDates();
 
         console.log('Consulta para menú semanal:', startDate, endDate); // Mensaje de depuración
 
@@ -154,7 +159,7 @@ function getMenuDetails(req, res) {
 
 // En el backend, manejador para la ruta '/updateMenuNutri'
 function updateMenuNutri(req, res) {
-    const { menuId, foodId, fecha, menuType, comidaNombre, infoNutricional, ingredientes } = req.body;
+    const { menuId, comidaId, menuType, fecha, comidaNombre, infoNutricional, ingredientes } = req.body;
 
     // Actualizar el menú
     const updateMenuQuery = `
@@ -164,7 +169,10 @@ function updateMenuNutri(req, res) {
     `;
     
     connection.query(updateMenuQuery, [fecha, menuType, menuId], (menuError) => {
-        if (menuError) return res.status(500).send('Error en la actualización del menú');
+        if (menuError) {
+            console.error('Error en la actualización del menú:', menuError);
+            return res.status(500).json({ error: 'Error en la actualización del menú' });
+        }
 
         // Actualizar la comida
         const updateFoodQuery = `
@@ -173,12 +181,48 @@ function updateMenuNutri(req, res) {
             WHERE idComida = ?
         `;
         
-        connection.query(updateFoodQuery, [comidaNombre, infoNutricional, ingredientes, foodId], (foodError) => {
-            if (foodError) return res.status(500).send('Error en la actualización de la comida');
-            res.status(200).send('Menú y comida actualizados exitosamente');
+        connection.query(updateFoodQuery, [comidaNombre, infoNutricional, ingredientes, comidaId], (foodError) => {
+            if (foodError) {
+                console.error('Error en la actualización de la comida:', foodError);
+                return res.status(500).json({ error: 'Error en la actualización de la comida' });
+            }
+            
+            res.status(200).json({ message: 'Menú y comida actualizados exitosamente' });
         });
     });
 }
+
+// Suponiendo que estás usando Express.js para el backend
+function deleteMenuAndFood (req, res) {
+    const { menuIds, comidaIds, menuType } = req.body;
+
+    console.log('Datos recibidos:', { menuIds, comidaIds, menuType });
+
+    if (!Array.isArray(menuIds) || !Array.isArray(comidaIds) || !menuType) {
+        return res.status(400).json({ success: false, message: 'Datos incompletos o inválidos.' });
+    }
+
+    // Paso 1: Eliminar las comidas relacionadas
+    const deleteFoodQuery = `DELETE FROM Comida WHERE idComida IN (${comidaIds.map(id => `'${id}'`).join(',')})`;
+    connection.query(deleteFoodQuery, (foodError) => {
+        if (foodError) {
+            console.error('Error al eliminar la comida:', foodError);
+            return res.status(500).json({ success: false, message: 'Error al eliminar la comida.' });
+        }
+
+        // Paso 2: Eliminar el menú después de eliminar las comidas
+        const deleteMenuQuery = `DELETE FROM Menu WHERE idMenu IN (${menuIds.map(id => `'${id}'`).join(',')})`;
+        connection.query(deleteMenuQuery, (menuError) => {
+            if (menuError) {
+                console.error('Error al eliminar el menú:', menuError);
+                return res.status(500).json({ success: false, message: 'Error al eliminar el menú.' });
+            }
+
+            res.status(200).json({ success: true, message: 'Registros eliminados exitosamente.' });
+        });
+    });
+};
+
 
 module.exports = {
     showListNutri,
@@ -186,5 +230,6 @@ module.exports = {
     addMenuNutri,
     updateMenuNutri,
     menuSemanalNutriconal,
-    getMenuDetails
+    getMenuDetails,
+    deleteMenuAndFood
 };

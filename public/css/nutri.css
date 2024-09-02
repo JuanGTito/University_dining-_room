@@ -262,3 +262,14 @@ table th {
 .selected {
     background-color: #d3d3d3; /* Color de fondo para la celda seleccionada */
 }
+
+/* CSS para ocultar columnas */
+.hide {
+    display: none;
+}
+
+/* CSS para mostrar columnas */
+.show {
+    display: table-cell; /* Asegura que las columnas con clase "show" se muestren */
+}
+

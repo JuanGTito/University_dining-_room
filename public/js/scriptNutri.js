@@ -22,7 +22,11 @@ function openMenuModal() {
                 tableBody.appendChild(tr);
             });
 
+            // Muestra el modal
             document.getElementById('menuModal').style.display = 'block';
+            
+            // Oculta las columnas no deseadas
+            hideUnwantedColumns();
         })
         .catch(error => console.error('Error al cargar el menú:', error));
 }
@@ -109,20 +113,41 @@ $(document).ready(function() {
 // Función para obtener la fecha del primer día de la próxima semana
 function getNextWeekStartDate() {
     const currentDate = new Date();
-    const dayOfWeek = currentDate.getUTCDay();
-    const daysUntilNextMonday = (dayOfWeek === 0 ? 1 : (8 - dayOfWeek));
-    const nextWeekStartDate = new Date(Date.UTC(
-        currentDate.getUTCFullYear(),
-        currentDate.getUTCMonth(),
-        currentDate.getUTCDate() + daysUntilNextMonday
-    ));
-    return nextWeekStartDate.toISOString().split('T')[0];
+    const currentDayOfWeek = currentDate.getUTCDay();
+
+    // Si hoy es domingo (0), la próxima semana comienza el lunes de la semana siguiente
+    // Si hoy es lunes a sábado, la próxima semana comienza en 7 días
+    const daysUntilNextMonday = (currentDayOfWeek === 0 ? 1 : 8 - currentDayOfWeek); 
+
+    // Calcula la fecha del próximo lunes
+    const nextWeekStartDate = new Date(currentDate);
+    nextWeekStartDate.setUTCDate(currentDate.getUTCDate() + daysUntilNextMonday);
+
+    return nextWeekStartDate.toISOString().split('T')[0]; // Devuelve la fecha en formato YYYY-MM-DD
 }
 
-function handleNextWeekClick() {
-    const nextWeekStartDate = getNextWeekStartDate();
+// Función para obtener la fecha del último día de la próxima semana
+function getNextWeekEndDate(startDate) {
+    const start = new Date(startDate);
+    const endDate = new Date(start);
+    endDate.setUTCDate(start.getUTCDate() + 6); // Obtiene el último día de la semana
+    return endDate.toISOString().split('T')[0]; // Formatea la fecha final
+}
 
-    fetch(`/menuSemanalNutri?startDate=${nextWeekStartDate}`)
+// Función para manejar el clic del botón de la próxima semana
+function handleNextWeekClick() {
+    // Obtener la fecha de inicio de la próxima semana
+    const nextWeekStartDate = getNextWeekStartDate();
+    
+    // Calcular la fecha de fin de la próxima semana (último día)
+    const nextWeekEndDate = getNextWeekEndDate(nextWeekStartDate);
+
+    // Imprimir las fechas en la consola para depuración
+    console.log(`Fecha de inicio de la próxima semana: ${nextWeekStartDate}`);
+    console.log(`Fecha de fin de la próxima semana: ${nextWeekEndDate}`);
+
+    // Hacer la solicitud al servidor con las fechas calculadas
+    fetch(`/menuSemanalNutri?startDate=${nextWeekStartDate}&endDate=${nextWeekEndDate}`)
         .then(response => response.json())
         .then(data => {
             const menuTableBody = document.getElementById('menuTableBody');
@@ -255,91 +280,131 @@ function clearSelection() {
 
 // Función para modificar la fila seleccionada
 function modifySelectedRow() {
-    // Verificar si hay celdas seleccionadas
     if (selectedCells.length === 0) {
         alert('No se ha seleccionado ninguna celda.');
         return;
     }
 
-    // Mapa para almacenar los IDs
-    let ids = {
-        menuId: null,
-        comidaId: null
-    };
+    let menuType = '';
+    let menuId = '';
+    let comidaId = '';
 
-    // Extraer los IDs desde las celdas seleccionadas
     selectedCells.forEach((cell, index) => {
-        const textContent = cell.textContent.trim();
-        // Determinar si el contenido es un ID y asignar en el mapa
-        if (index === 1) { // ID de menú (desayuno o almuerzo)
-            ids.menuId = textContent;
-        } else if (index === 2) { // ID de comida (desayuno o almuerzo)
-            ids.comidaId = textContent;
+        const content = cell.textContent.trim();
+        if (index === 1) {
+            menuId = content;
+        } else if (index === 2) {
+            comidaId = content;
         }
     });
 
-    // Verificar si se han encontrado IDs válidos
-    if (!ids.menuId || !ids.comidaId) {
-        alert('No se han encontrado IDs válidos.');
-        return;
-    }
-
-    // Determinar el tipo de menú según el índice de columna seleccionado
     const columnIndex = selectedCells[0].cellIndex;
-    let menuType = '';
     if (columnIndex >= 1 && columnIndex <= 3) {
         menuType = 'desayuno';
     } else if (columnIndex >= 4 && columnIndex <= 6) {
         menuType = 'almuerzo';
+    } else {
+        alert('Índice de columna no reconocido.');
+        return;
     }
 
-    // Realizar la solicitud al backend
-    fetch(`/getMenuDetails?menuType=${menuType}&menuId=${ids.menuId}&comidaId=${ids.comidaId}`)
+    console.log(`Tipo de menú: ${menuType}, ID Menú: ${menuId}, ID Comida: ${comidaId}`);
+
+    if (!menuId || !comidaId) {
+        alert('No se han encontrado IDs válidos.');
+        return;
+    }
+
+    fetch(`/getMenuDetails?menuType=${menuType}&menuId=${menuId}&comidaId=${comidaId}`)
         .then(response => response.json())
         .then(data => {
-            // Mostrar los datos en el modal
             console.log('Datos recibidos del backend:', data);
+
+            // Mostrar el modal y actualizar el contenido con los datos
+            const modal = document.getElementById('addMenuAndFoodModal');
+            const modalTitle = modal.querySelector('#modalTitle');
+            const fechaInput = modal.querySelector('#fecha');
+            const menuTypeSelect = modal.querySelector('#menuType');
+            const comidaNombreInput = modal.querySelector('#comidaNombre');
+            const infoNutricionalTextarea = modal.querySelector('#infoNutricional');
+            const ingredientesTextarea = modal.querySelector('#ingredientes');
+            const updateButton = modal.querySelector('#updateButton');
+            const submitButton = modal.querySelector('#submitButton');
+
+            modalTitle.textContent = 'Modificar Menú y Comida';
+
+            fechaInput.value = data.fecha;
+            menuTypeSelect.value = data.menuType;
+            comidaNombreInput.value = data.comidaNombre;
+            infoNutricionalTextarea.value = data.infoNutricional;
+            ingredientesTextarea.value = data.ingredientes;
+
+            submitButton.style.display = 'none';
+            updateButton.style.display = 'inline-block';
+
+            // Guardar datos en atributos de datos para su uso posterior
+            modal.dataset.menuId = menuId;
+            modal.dataset.comidaId = comidaId;
+            modal.dataset.menuType = menuType;
+
+            modal.style.display = 'block';
         })
         .catch(error => {
             console.error('Error al obtener los datos:', error);
+            alert('Error al obtener los datos.');
         });
 }
 
-
-
 function updateMenuAndFood() {
+    // Obtener los valores del formulario
     const fecha = document.getElementById('fecha').value;
     const menuType = document.getElementById('menuType').value;
     const comidaNombre = document.getElementById('comidaNombre').value;
     const infoNutricional = document.getElementById('infoNutricional').value;
     const ingredientes = document.getElementById('ingredientes').value;
 
-    if (!fecha || !menuType || !comidaNombre || !infoNutricional || !ingredientes) {
-        alert("Todos los campos son obligatorios. Por favor completa el formulario.");
+    // Obtener los IDs desde los atributos del modal
+    const modal = document.getElementById('addMenuAndFoodModal');
+    const menuId = modal.dataset.menuId;
+    const comidaId = modal.dataset.comidaId;
+
+    // Verificar que todos los campos requeridos estén llenos
+    if (!fecha || !menuType || !comidaNombre || !infoNutricional || !ingredientes || !menuId || !comidaId) {
+        alert('Por favor, complete todos los campos.');
         return;
     }
 
+    // Enviar los datos al servidor para actualización
     fetch('/updateMenuNutri', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            fecha: fecha,
-            menuType: menuType,
-            comidaNombre: comidaNombre,
-            infoNutricional: infoNutricional,
-            ingredientes: ingredientes
+            menuId,
+            comidaId,
+            menuType,
+            fecha,
+            comidaNombre,
+            infoNutricional,
+            ingredientes
         })
     })
-    .then(response => response.text())
-    .then(data => {
-        alert(data);
-        closeModal(); // Cierra el modal
-        refreshCurrentWeekMenu(); // Actualiza el menú de la semana actual
+    .then(response => {
+        if (!response.ok) throw new Error('Error en la actualización');
+        return response.json();
     })
-    .catch(error => console.error('Error al modificar:', error));
+    .then(data => {
+        alert('Menú y comida actualizados exitosamente');
+        closeModal(); // Cerrar el modal
+        // Aquí puedes actualizar la tabla para reflejar los cambios
+    })
+    .catch(error => {
+        console.error('Error al actualizar el menú:', error);
+        alert('Error al actualizar el menú. Inténtalo de nuevo.');
+    });
 }
+
 
 function getFechaFromDiaSemana(diaSemana) {
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
@@ -404,3 +469,86 @@ function clearSelection() {
         selectedRow = null;
     }
 }
+
+function hideUnwantedColumns() {
+    // Selecciona las celdas de encabezado
+    const headers = document.querySelectorAll('#menuTable th');
+    // Selecciona las celdas de datos
+    const rows = document.querySelectorAll('#menuTable tbody tr');
+
+    headers.forEach((header, index) => {
+        if (header.classList.contains('hide')) {
+            header.style.display = 'none'; // Oculta el encabezado de la columna
+            // Oculta todas las celdas en esa columna
+            rows.forEach(row => {
+                row.cells[index].style.display = 'none'; // Oculta la celda en esa columna
+            });
+        } else {
+            header.style.display = 'table-cell'; // Muestra el encabezado de la columna
+            // Muestra todas las celdas en esa columna
+            rows.forEach(row => {
+                row.cells[index].style.display = 'table-cell'; // Muestra la celda en esa columna
+            });
+        }
+    });
+}
+
+function confirmDelete() {
+    const selectedCells = document.querySelectorAll('td.selected');
+
+    if (selectedCells.length === 0) {
+        alert('No se ha seleccionado ninguna celda.');
+        return;
+    }
+
+    let menuIdsToDelete = [];
+    let comidaIdsToDelete = [];
+    let menuType = '';
+
+    selectedCells.forEach((cell, index) => {
+        if (index === 0) {
+            menuType = cell.textContent.trim();
+        } else if (index === 1) {
+            menuIdsToDelete.push(cell.textContent.trim());
+        } else if (index === 2) {
+            comidaIdsToDelete.push(cell.textContent.trim());
+        }
+    });
+
+    if (menuIdsToDelete.length === 0 || comidaIdsToDelete.length === 0) {
+        alert('No se encontraron IDs válidos para eliminar.');
+        return;
+    }
+
+    if (confirm('¿Estás seguro de que deseas eliminar los registros seleccionados?')) {
+        fetch('/deleteMenuAndFood', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                menuIds: menuIdsToDelete,
+                comidaIds: comidaIdsToDelete,
+                menuType: menuType
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la solicitud');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            if (data.success) {
+                alert('Registros eliminados exitosamente.');
+                openMenuModal(); // Actualiza la tabla
+            } else {
+                alert('Error al eliminar los registros.');
+            }
+        })
+        .catch(error => console.error('Error al eliminar los registros:', error));
+    }
+}
+
+

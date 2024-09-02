@@ -84,18 +84,18 @@
                 <div class="crud-info">
                     <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
                     <button class="btn pulse-effect" type="button" onclick="modifySelectedRow()">Modificar</button>
-                    <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
+                    <button class="btn pulse-effect" type="button" onclick="confirmDelete()">Eliminar</button>
                 </div>
                 <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr>
-                            <th>Día</th>
-                            <th>Desayuno</th>
-                            <th>ID Menú Desayuno</th>
-                            <th>ID Comida Desayuno</th>
-                            <th>Almuerzo</th>
-                            <th>ID Menú Almuerzo</th>
-                            <th>ID Comida Almuerzo</th>
+                            <th class="show">Día</th>
+                            <th class="show">Desayuno</th>
+                            <th class="hide">ID Menú Desayuno</th>
+                            <th class="hide">ID Comida Desayuno</th>
+                            <th class="show">Almuerzo</th>
+                            <th class="hide">ID Menú Almuerzo</th>
+                            <th class="hide">ID Comida Almuerzo</th>
                         </tr>
                     </thead>
                     <tbody id="menuTableBody">
@@ -133,23 +133,23 @@
                 <form id="menuAndFoodForm" novalidate>
                     <label for="fecha">Fecha:</label>
                     <input type="date" id="fecha" name="fecha" required><br>
-                    
+
                     <label for="menuType">Tipo de Menú:</label>
                     <select id="menuType" name="menuType" required>
                         <option value="">Selecciona un tipo</option>
                         <option value="Desayuno">Desayuno</option>
                         <option value="Almuerzo">Almuerzo</option>
                     </select><br>
-                    
+
                     <label for="comidaNombre">Nombre de la Comida:</label>
                     <input type="text" id="comidaNombre" name="comidaNombre" required><br>
-                    
+
                     <label for="infoNutricional">Información Nutricional:</label>
                     <textarea id="infoNutricional" name="infoNutricional" required></textarea><br>
-                    
+
                     <label for="ingredientes">Ingredientes:</label>
                     <textarea id="ingredientes" name="ingredientes" required></textarea><br>
-                    
+
                     <button type="button" id="submitButton" onclick="submitMenuAndFoodForm()">Agregar</button>
                     <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Actualizar</button>
                 </form>

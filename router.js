@@ -69,6 +69,7 @@ router.post('/addMenuNutri', nutricionistaController.addMenuNutri);
 router.get('/menuSemanalNutriconal', nutricionistaController.menuSemanalNutriconal);
 router.get('/getMenuDetails', nutricionistaController.getMenuDetails);
 router.post('/updateMenuNutri', nutricionistaController.updateMenuNutri);
+router.post('/deleteMenuAndFood', nutricionistaController.deleteMenuAndFood);
 
 
 
