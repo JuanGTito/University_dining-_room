@@ -95,34 +95,6 @@ function addMenuNutri(req, res) {
     });
 }
 
-// Backend: nutri.js
-function updateMenuNutri(req, res) {
-    const { menuId, foodId, fecha, menuType, comidaNombre, infoNutricional, ingredientes } = req.body;
-
-    // Actualizar el menú
-    const updateMenuQuery = `
-        UPDATE Menu 
-        SET fecha = ?, tip_menu = ? 
-        WHERE idMenu = ?
-    `;
-    
-    connection.query(updateMenuQuery, [fecha, menuType, menuId], (menuError) => {
-        if (menuError) return res.status(500).send('Error en la actualización del menú');
-
-        // Actualizar la comida
-        const updateFoodQuery = `
-            UPDATE Comida 
-            SET nombre = ?, info_nutricional = ?, ingredientes = ? 
-            WHERE idComida = ?
-        `;
-        
-        connection.query(updateFoodQuery, [comidaNombre, infoNutricional, ingredientes, foodId], (foodError) => {
-            if (foodError) return res.status(500).send('Error en la actualización de la comida');
-            res.status(200).send('Menú y comida actualizados exitosamente');
-        });
-    });
-}
-
 function menuSemanalNutriconal(req, res) {
     connection.query('SET lc_time_names = \'es_ES\'', (err) => {
         if (err) return res.status(500).send('Error en la configuración del idioma');
@@ -150,10 +122,69 @@ function menuSemanalNutriconal(req, res) {
     });
 }
 
+// Nueva función en el archivo back-end para obtener los datos del menú y la comida
+function getMenuDetails(req, res) {
+    const { menuType, menuId, comidaId } = req.query;
+
+    // Verifica que todos los parámetros necesarios estén presentes
+    if (!menuType || !menuId || !comidaId) {
+        return res.status(400).send('Faltan parámetros en la solicitud.');
+    }
+
+    const query = `
+        SELECT fecha, tip_menu AS menuType, nombre AS comidaNombre, info_nutricional AS infoNutricional, ingredientes
+        FROM Menu
+        LEFT JOIN Comida ON Menu.idMenu = Comida.idMenu
+        WHERE Comida.idComida = ? OR Menu.idMenu = ?
+    `;
+
+    connection.query(query, [comidaId, menuId], (error, results) => {
+        if (error) {
+            console.error('Error en la consulta:', error);
+            return res.status(500).send('Error en la consulta');
+        }
+
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).send('No se encontraron datos para los IDs proporcionados');
+        }
+    });
+}
+
+// En el backend, manejador para la ruta '/updateMenuNutri'
+function updateMenuNutri(req, res) {
+    const { menuId, foodId, fecha, menuType, comidaNombre, infoNutricional, ingredientes } = req.body;
+
+    // Actualizar el menú
+    const updateMenuQuery = `
+        UPDATE Menu 
+        SET fecha = ?, tip_menu = ? 
+        WHERE idMenu = ?
+    `;
+    
+    connection.query(updateMenuQuery, [fecha, menuType, menuId], (menuError) => {
+        if (menuError) return res.status(500).send('Error en la actualización del menú');
+
+        // Actualizar la comida
+        const updateFoodQuery = `
+            UPDATE Comida 
+            SET nombre = ?, info_nutricional = ?, ingredientes = ? 
+            WHERE idComida = ?
+        `;
+        
+        connection.query(updateFoodQuery, [comidaNombre, infoNutricional, ingredientes, foodId], (foodError) => {
+            if (foodError) return res.status(500).send('Error en la actualización de la comida');
+            res.status(200).send('Menú y comida actualizados exitosamente');
+        });
+    });
+}
+
 module.exports = {
     showListNutri,
     menuSemanalNutri,
     addMenuNutri,
     updateMenuNutri,
-    menuSemanalNutriconal
+    menuSemanalNutriconal,
+    getMenuDetails
 };

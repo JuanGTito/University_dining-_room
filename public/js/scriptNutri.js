@@ -1,4 +1,3 @@
-let selectedRow = null; // Para almacenar la fila seleccionada
 let inventarioVisible = false;
 
 // Función para abrir el modal con el contenido del menú
@@ -27,8 +26,6 @@ function openMenuModal() {
         })
         .catch(error => console.error('Error al cargar el menú:', error));
 }
-
-
 
 function closeMenuModal() {
     document.getElementById('menuModal').style.display = 'none';
@@ -189,31 +186,23 @@ function submitMenuAndFoodForm() {
     .catch(error => console.error('Error:', error));
 }
 
-function modifySelectedRow() {
-    const selectedRow = document.querySelector('#menuTableBody tr.selected');
+function mostrarNotificacion(mensaje) {
+    const notificacion = document.createElement('div');
+    notificacion.className = 'notificacion';
+    notificacion.innerText = mensaje;
+    document.body.appendChild(notificacion);
 
-    if (!selectedRow) {
-        alert("Por favor selecciona una fila para modificar.");
-        return;
-    }
-
-    const diaSemana = selectedRow.cells[0].innerText;
-    const desayuno = selectedRow.cells[1].innerText;
-    const almuerzo = selectedRow.cells[2].innerText;
-
-    document.getElementById('fecha').value = getFechaFromDiaSemana(diaSemana);
-    document.getElementById('menuType').value = desayuno ? 'Desayuno' : 'Almuerzo';
-    document.getElementById('comidaNombre').value = desayuno || almuerzo;
-
-    document.getElementById('addMenuAndFoodModal').style.display = 'block';
-    document.getElementById('submitButton').style.display = 'none';
-    document.getElementById('updateButton').style.display = 'block';
+    setTimeout(() => {
+        notificacion.remove();
+    }, 3000); // La notificación desaparecerá después de 3 segundos
 }
 
-// Añadir el manejador de eventos para el clic en las celdas
+// Variables globales
+let selectedCells = [];
+let selectedRow = null;
+
 document.addEventListener('DOMContentLoaded', function() {
     const menuTable = document.getElementById('menuTable');
-    let selectedCells = [];
 
     // Agregar eventos a las celdas para la selección
     menuTable.addEventListener('click', function(event) {
@@ -223,42 +212,98 @@ document.addEventListener('DOMContentLoaded', function() {
             const cells = row.getElementsByTagName('td');
 
             // Limpiar selección previa
-            selectedCells.forEach(cell => cell.classList.remove('selected'));
-            selectedCells = [];
+            clearSelection();
+
+            // Marcar la fila seleccionada
+            if (selectedRow) {
+                selectedRow.classList.remove('selected-row');
+            }
+            selectedRow = row;
+            selectedRow.classList.add('selected-row');
 
             // Resaltar celdas específicas según la columna
             const columnIndex = cell.cellIndex;
 
-            for (let i = 0; i < cells.length; i++) {
-                if (i === columnIndex) {
-                    cell.classList.add('selected');
-                    selectedCells.push(cell);
+            // Limpiar la selección previa
+            clearSelection();
+
+            // Marcar celdas seleccionadas según la columna
+            if (columnIndex >= 1 && columnIndex <= 3) { // Columnas de desayuno
+                for (let i = 1; i <= 3; i++) {
+                    cells[i].classList.add('selected');
+                    selectedCells.push(cells[i]);
                 }
-                // Resaltar todas las celdas de la columna de desayuno
-                if (columnIndex === 1) {
-                    if (cells[i].cellIndex === 1 || cells[i].cellIndex === 2 || cells[i].cellIndex === 3) {
-                        cells[i].classList.add('selected');
-                        selectedCells.push(cells[i]);
-                    }
-                }
-                // Resaltar todas las celdas de la columna de almuerzo
-                if (columnIndex === 4) {
-                    if (cells[i].cellIndex === 4 || cells[i].cellIndex === 5 || cells[i].cellIndex === 6) {
-                        cells[i].classList.add('selected');
-                        selectedCells.push(cells[i]);
-                    }
+            } else if (columnIndex >= 4 && columnIndex <= 6) { // Columnas de almuerzo
+                for (let i = 4; i <= 6; i++) {
+                    cells[i].classList.add('selected');
+                    selectedCells.push(cells[i]);
                 }
             }
         }
     });
-
-    // Función para limpiar la selección
-    function clearSelection() {
-        selectedCells.forEach(cell => cell.classList.remove('selected'));
-        selectedCells = [];
-    }
 });
 
+// Función para limpiar la selección
+function clearSelection() {
+    selectedCells.forEach(cell => cell.classList.remove('selected'));
+    selectedCells = [];
+    if (selectedRow) {
+        selectedRow.classList.remove('selected-row');
+        selectedRow = null;
+    }
+}
+
+// Función para modificar la fila seleccionada
+function modifySelectedRow() {
+    // Verificar si hay celdas seleccionadas
+    if (selectedCells.length === 0) {
+        alert('No se ha seleccionado ninguna celda.');
+        return;
+    }
+
+    // Mapa para almacenar los IDs
+    let ids = {
+        menuId: null,
+        comidaId: null
+    };
+
+    // Extraer los IDs desde las celdas seleccionadas
+    selectedCells.forEach((cell, index) => {
+        const textContent = cell.textContent.trim();
+        // Determinar si el contenido es un ID y asignar en el mapa
+        if (index === 1) { // ID de menú (desayuno o almuerzo)
+            ids.menuId = textContent;
+        } else if (index === 2) { // ID de comida (desayuno o almuerzo)
+            ids.comidaId = textContent;
+        }
+    });
+
+    // Verificar si se han encontrado IDs válidos
+    if (!ids.menuId || !ids.comidaId) {
+        alert('No se han encontrado IDs válidos.');
+        return;
+    }
+
+    // Determinar el tipo de menú según el índice de columna seleccionado
+    const columnIndex = selectedCells[0].cellIndex;
+    let menuType = '';
+    if (columnIndex >= 1 && columnIndex <= 3) {
+        menuType = 'desayuno';
+    } else if (columnIndex >= 4 && columnIndex <= 6) {
+        menuType = 'almuerzo';
+    }
+
+    // Realizar la solicitud al backend
+    fetch(`/getMenuDetails?menuType=${menuType}&menuId=${ids.menuId}&comidaId=${ids.comidaId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Mostrar los datos en el modal
+            console.log('Datos recibidos del backend:', data);
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos:', error);
+        });
+}
 
 
 
@@ -290,7 +335,8 @@ function updateMenuAndFood() {
     .then(response => response.text())
     .then(data => {
         alert(data);
-        closeModal();
+        closeModal(); // Cierra el modal
+        refreshCurrentWeekMenu(); // Actualiza el menú de la semana actual
     })
     .catch(error => console.error('Error al modificar:', error));
 }
@@ -306,4 +352,55 @@ function getFechaFromDiaSemana(diaSemana) {
         return fecha.toISOString().split('T')[0];
     }
     return '';
+}
+
+function getCurrentWeekStartDate() {
+    const currentDate = new Date();
+    const dayOfWeek = currentDate.getUTCDay();
+    const daysUntilMonday = (dayOfWeek === 0 ? 1 : (1 - dayOfWeek));
+    const weekStartDate = new Date(Date.UTC(
+        currentDate.getUTCFullYear(),
+        currentDate.getUTCMonth(),
+        currentDate.getUTCDate() + daysUntilMonday
+    ));
+    return weekStartDate.toISOString().split('T')[0];
+}
+
+// Esta función debería refrescar el menú para la semana actual
+function refreshCurrentWeekMenu() {
+    const currentWeekStartDate = getCurrentWeekStartDate(); // Usa la función existente para obtener la fecha de inicio de la semana actual
+    fetch(`/menuSemanalNutri?startDate=${currentWeekStartDate}`)
+        .then(response => response.json())
+        .then(data => {
+            const menuTableBody = document.getElementById('menuTableBody');
+            menuTableBody.innerHTML = '';
+
+            if (data.length > 0) {
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.dia_semana}</td>
+                        <td>${item.desayuno}</td>
+                        <td>${item.almuerzo}</td>
+                    `;
+                    menuTableBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="3">No hay menú para la semana actual. Agrega un nuevo menú.</td>';
+                menuTableBody.appendChild(row);
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener el menú actual:', error);
+        });
+}
+
+function clearSelection() {
+    selectedCells.forEach(cell => cell.classList.remove('selected'));
+    selectedCells = [];
+    if (selectedRow) {
+        selectedRow.classList.remove('selected-row');
+        selectedRow = null;
+    }
 }

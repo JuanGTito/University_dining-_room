@@ -75,42 +75,40 @@
             <button class="btn pulse-effect" onclick="openModalEnc()">Reporte Quejas</button>
             
         </section>
-
         <!-- Modal para visualizar el menú -->
-<!-- Modal para visualizar el menú -->
-<div id="menuModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeMenuModal()">&times;</span>
-        <h2>Menú Semanal</h2>
-        <hr>
-        <div class="crud-info">
-            <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
-            <button class="btn pulse-effect" type="button" onclick="showEditDialog()">Modificar</button>
-            <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
+        <div id="menuModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeMenuModal()">&times;</span>
+                <h2>Menú Semanal</h2>
+                <hr>
+                <div class="crud-info">
+                    <button class="btn pulse-effect" type="button" onclick="showAddDialog()">Agregar</button>
+                    <button class="btn pulse-effect" type="button" onclick="modifySelectedRow()">Modificar</button>
+                    <button class="btn pulse-effect" type="button" id="deleteButton" onclick="confirmDelete()">Eliminar</button>
+                </div>
+                <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Día</th>
+                            <th>Desayuno</th>
+                            <th>ID Menú Desayuno</th>
+                            <th>ID Comida Desayuno</th>
+                            <th>Almuerzo</th>
+                            <th>ID Menú Almuerzo</th>
+                            <th>ID Comida Almuerzo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menuTableBody">
+                        <!-- Las filas del menú se llenarán con JavaScript -->
+                    </tbody>
+                </table>                
+                <div class="navigation-buttons">
+                    <button id="nextWeekButton" class="btn pulse-effect" type="button">
+                        <i class="fa fa-arrow-right"></i> Siguiente Semana
+                    </button>
+                </div>
+            </div>
         </div>
-        <table id="menuTable" border="1" style="width:100%; border-collapse:collapse;">
-            <thead>
-                <tr>
-                    <th>Día</th>
-                    <th>Desayuno</th>
-                    <th>ID Menú Desayuno</th>
-                    <th>ID Comida Desayuno</th>
-                    <th>Almuerzo</th>
-                    <th>ID Menú Almuerzo</th>
-                    <th>ID Comida Almuerzo</th>
-                </tr>
-            </thead>
-            <tbody id="menuTableBody">
-                <!-- Las filas del menú se llenarán con JavaScript -->
-            </tbody>
-        </table>
-        <div class="navigation-buttons">
-            <button id="nextWeekButton" class="btn pulse-effect" type="button">
-                <i class="fa fa-arrow-right"></i> Siguiente Semana
-            </button>
-        </div>
-    </div>
-</div>
 
         <div id="surveysModal" class="modal">
             <div class="modal-content">
@@ -153,7 +151,7 @@
                     <textarea id="ingredientes" name="ingredientes" required></textarea><br>
                     
                     <button type="button" id="submitButton" onclick="submitMenuAndFoodForm()">Agregar</button>
-                    <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Modificar</button>
+                    <button type="button" id="updateButton" style="display:none;" onclick="updateMenuAndFood()">Actualizar</button>
                 </form>
             </div>
         </div>
